@@ -8,5 +8,20 @@ export async function userIdDuplicationCheck(user_id) {
 } 
 
 export async function userJoin(params) {
+  return db
+  .execute(`insert into user(user_id, user_passwd, user_name, user_email, user_phone, join_date, user_role)
+                        values(?,?,?,?,?,curdate(),0)`,params)
+  .then(result => 'success')
+  .catch(err => {
+    console.log(err)
+    return 'fail'
+  })
+}
 
+export async function userLogin(user_id) {
+  return db
+  .execute(`select user_passwd as hashPw, user_name from user
+            where user_id=?`, [user_id])
+  .then(result => result[0][0] || 'not exist')
+  .catch(console.error)
 }

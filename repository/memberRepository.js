@@ -1,11 +1,13 @@
 import {db} from '../db/database.js'
 
-export async function userIdDuplicationCheck(user_id) {
+export async function getUserInfo(user_id) {
   return db
-  .execute('select if(count(*)=0, 1, 0) isUnique from user where user_id=?',[user_id])
-  .then(result => result[0][0].isUnique)
-  .catch(err => console.log(err))
-} 
+  .execute(`select user_passwd as hashPw, user_name, user_email, user_phone, 
+                  user_img, user_img, join_date, user_role 
+                  from user where user_id=?`, [user_id])
+  .then(result => result[0][0])
+  .catch(console.error)
+}
 
 export async function userJoin(params) {
   return db
@@ -17,15 +19,6 @@ export async function userJoin(params) {
     return 'fail'
   })
 }
-
-export async function userLogin(user_id) {
-  return db
-  .execute(`select user_passwd as hashPw, user_name from user
-            where user_id=?`, [user_id])
-  .then(result => result[0][0] || 'not exist')
-  .catch(console.error)
-}
-
 
 export async function storeRefreshToken(params) { // user_id, refresh_token 을 담은 배열
   return db

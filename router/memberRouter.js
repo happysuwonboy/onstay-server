@@ -13,6 +13,9 @@ router.post('/join', memberController.userJoin) // 회원가입
 /** 로그인 */
 router.post('/login', memberController.userLogin)
 
+/** 토큰 체크 */
+router.get('/tokenCheck', memberController.tokenCheck)
+
 
 
 export default router

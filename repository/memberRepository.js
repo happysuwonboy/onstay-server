@@ -25,3 +25,12 @@ export async function userLogin(user_id) {
   .then(result => result[0][0] || 'not exist')
   .catch(console.error)
 }
+
+
+export async function storeToken(params) {
+  return db
+  .execute(`insert into user_token(user_id, access_token, refresh_token) values (?,?,?)
+            on duplicate key update user_id=?, access_token=?, refresh_token=?`, [...params,...params])
+  .then(res => 'ok')
+  .catch(err => console.log(err))
+}

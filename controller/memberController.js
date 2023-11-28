@@ -1,6 +1,9 @@
 import * as memberRepository from '../repository/memberRepository.js'
 import bcrypt from 'bcrypt';
 import { createAccessToken, createRefreshToken } from '../util/token.js';
+import jwt from 'jsonwebtoken';
+import { REFRESH_TOKEN } from '../constants/secureConstatns.js';
+import { getDateTime } from '../util/util.js';
 
 export async function userIdDuplicationCheck(req, res) {
   const { user_id } = req.params;
@@ -36,13 +39,12 @@ export async function userLogin(req, res) {
   if (!isPwSame) { // 패스워드 틀릴 경우 종료 
     return res.status(403).send('wrong pw') 
   } else { // 패스워드 일치할 경우
-    const accessToken = createAccessToken({ user_id, user_name }) // 이건 json으로 보내줘
+    const accessToken = createAccessToken({ user_id })
     const refreshToken = createRefreshToken({ user_id })
-    res.cookie('auth_refresh_token', refreshToken, {
-       httpOnly : true,
-       maxAge : 7 * 24 * 60 * 60 * 1000
-    })
-    res.status(201).json({accessToken})
+    await memberRepository.storeToken([user_id, accessToken, refreshToken])
+    res.cookie('auth_access_token', accessToken, {httpOnly:true, maxAge:1*60*60*1000}) // 1시간
+    res.cookie('auth_refresh_token', refreshToken, {httpOnly:true, maxAge:30*24*60*60*1000}) // 30일
+    res.status(201).json({user_id, user_name})
   }
 }
 

@@ -16,6 +16,8 @@ export async function getList(req, res) {
  * @param {*} res 
  */
 export async function getAccList(req, res) {
-  const result = await newStayRepostory.getAccList();
+  const { page, pageItem } = req.body;
+  const offset = (page - 1) * pageItem + 1;
+  const result = await newStayRepostory.getAccList({ pageItem, offset });
   res.json(result);
 }

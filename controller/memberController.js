@@ -1,6 +1,6 @@
 import * as memberRepository from '../repository/memberRepository.js'
 import bcrypt from 'bcrypt';
-import { createAccessToken, createRefreshToken } from '../util/token.js';
+import { createAccessToken, createRefreshToken, removeAllToken } from '../util/token.js';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants/secureConstatns.js';
 import jwt from 'jsonwebtoken';
 
@@ -48,6 +48,14 @@ export async function userLogin(req, res) {
 }
 
 
+export async function userLogout(req,res) {
+  const user_id = req.body.user_id;
+  await memberRepository.storeRefreshToken([user_id, null])
+  removeAllToken(res)
+  res.status(204).send('ok')
+}
+
+
 // 액세스 토큰 및 리프레쉬 토큰 체크 컨트롤러
 export async function tokenCheck(req, res) {
   const accessToken = req.cookies.auth_access_token;
@@ -62,12 +70,16 @@ export async function tokenCheck(req, res) {
       let {user_name, user_role} = userInfo;
       return res.status(200).send({userInfo : {user_id, user_name, isAdmin : user_role===1 ? true : false}}); // 액세스 토큰 만료되지 않은 경우 ok 보내주고 종료
     } catch {
+      removeAllToken(res)
       return res.status(401).send('invalid token') // 이상한 형식이거나, 프로젝트의 시크릿키로 암호화되지 않았을 경우  종료
     }  
   }
 
   // 2.리프레쉬 토큰 만료 여부를 체크
-  if (!refreshToken) return res.status(401).send('invalid token'); // 리프레쉬 토큰 만료된 경우 종료
+  if (!refreshToken) {
+    removeAllToken(res)
+    return res.status(401).send('invalid token')
+  }; // 리프레쉬 토큰 만료된 경우 종료
 
 
   // 3. 헤더로 넘어온 리프레쉬 토큰과 db의 리프레쉬 토큰의 일치 여부 확인
@@ -76,12 +88,16 @@ export async function tokenCheck(req, res) {
   try {
      user_id = jwt.verify(refreshToken,REFRESH_TOKEN.secretKey).user_id;
   } catch {
+    removeAllToken(res)
     return res.status(401).send('invalid token') 
   }
 
   isSame = await memberRepository.checkRefreshToken(user_id, refreshToken);
 
-  if (!isSame) return res.status(401).send('invalid token'); // 리프레쉬 토큰 검증 실패한 경우 종료
+  if (!isSame) {
+    removeAllToken(res)
+    return res.status(401).send('invalid token');
+  } // 리프레쉬 토큰 검증 실패한 경우 종료
 
   // 4. 새로운 액세스 토큰 발급
   const newAccessToken = createAccessToken({user_id});

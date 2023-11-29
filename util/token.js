@@ -8,3 +8,8 @@ export const createAccessToken = (userInfo) => {
 export const createRefreshToken = (userInfo) => {
   return jwt.sign(userInfo, REFRESH_TOKEN.secretKey, REFRESH_TOKEN.config) 
 } 
+
+export const removeAllToken = (res) => {
+  res.cookie('auth_access_token', null, {maxAge:0})
+  res.cookie('auth_refresh_token', null, {maxAge:0})
+}

@@ -13,7 +13,10 @@ router.post('/join', memberController.userJoin) // 회원가입
 /** 로그인 */
 router.post('/login', memberController.userLogin)
 
-/** 토큰 체크 */
+/** 로그아웃 */
+router.post('/logout', memberController.userLogout)
+
+/** 액세스 토큰 및 리프레쉬 토큰 체크 */
 router.get('/tokenCheck', memberController.tokenCheck)
 
 

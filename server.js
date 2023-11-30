@@ -3,7 +3,8 @@ import cors from 'cors';
 import newStayRouer from './router/newStayRouter.js';
 import categoryRouter from './router/categoryRouter.js';
 import accRouter from './router/accRouter.js';
-import memberRouter from './router/memberRouter.js'
+import memberRouter from './router/memberRouter.js';
+import myPageRouter from './router/myPageRouter.js';
 import cookieParser from 'cookie-parser';
 
 const server = express();
@@ -22,5 +23,6 @@ server.use('/', categoryRouter);
 server.use('/acc', accRouter)
 server.use('/newstay', newStayRouer);
 server.use('/member', memberRouter)
+server.use('/mypage', myPageRouter);
 
 server.listen(PORT, ()=>{console.log(`listening on ${PORT}`)});

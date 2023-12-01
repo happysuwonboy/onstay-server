@@ -6,6 +6,8 @@ import accRouter from './router/accRouter.js';
 import memberRouter from './router/memberRouter.js';
 import myPageRouter from './router/myPageRouter.js';
 import cookieParser from 'cookie-parser';
+import accRouter from './router/accRouter.js'
+import findStayRouter from './router/findStayRouter.js';
 
 const server = express();
 const PORT = 8000;
@@ -24,5 +26,6 @@ server.use('/acc', accRouter)
 server.use('/newstay', newStayRouer);
 server.use('/member', memberRouter)
 server.use('/mypage', myPageRouter);
+server.use('/findstay', findStayRouter);
 
 server.listen(PORT, ()=>{console.log(`listening on ${PORT}`)});

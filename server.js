@@ -6,7 +6,6 @@ import accRouter from './router/accRouter.js';
 import memberRouter from './router/memberRouter.js';
 import myPageRouter from './router/myPageRouter.js';
 import cookieParser from 'cookie-parser';
-import accRouter from './router/accRouter.js'
 import findStayRouter from './router/findStayRouter.js';
 
 const server = express();

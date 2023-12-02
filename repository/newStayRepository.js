@@ -25,10 +25,13 @@ export async function getList() {
  * NewAccContent
  * @returns 3개월 이내 등록된 숙소 데이터와 등록일과 현재일자 차이, 페이지별 데이터 추출
  */
-export async function getAccList({ pageItem, offset }) {
+export async function getAccList({ startIndex, endIndex }) {
   const sql = `
-    select * from 
-    (select acc.acc_id, 
+    select 
+    no, acc_id, acc_name, area_code, register_date, acc_img, min_capa, max_capa, day_diff
+    from (select 
+    row_number() over (order by register_date desc) as no,  
+    acc.acc_id, 
     acc.acc_name, 
     acc.area_code, 
     acc.register_date, 
@@ -46,9 +49,9 @@ export async function getAccList({ pageItem, offset }) {
     order by
     register_date desc)
     as newacclist 
-    limit ${pageItem} offset ${offset}`;
+    where no between ? and ?`;
 
   return db
-    .execute(sql)
+    .execute(sql, [startIndex, endIndex])
     .then(row => row[0])
 }

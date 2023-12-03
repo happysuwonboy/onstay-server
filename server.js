@@ -4,6 +4,7 @@ import newStayRouer from './router/newStayRouter.js';
 import categoryRouter from './router/categoryRouter.js';
 import accRouter from './router/accRouter.js';
 import roomRouter from './router/roomRouter.js';
+import reservationRouter from './router/reservationRouter.js'
 
 const server = express();
 const PORT = 8000;
@@ -16,5 +17,6 @@ server.use('/', categoryRouter);
 server.use('/acc', accRouter);
 server.use('/newstay', newStayRouer);
 server.use('/room', roomRouter);
+server.use('/reservation', reservationRouter);
 
 server.listen(PORT, ()=>{console.log(`listening on ${PORT}`)});

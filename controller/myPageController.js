@@ -8,7 +8,7 @@ export async function getUserReservation(req,res) {
 
   if (reservsations === 'no result') return res.status(200).send([])
 
-  const result = [];
+  const result = []; 
   
   for (const reservation of reservsations) {
     const images = await accRepository.getAccImages(reservation.acc_id);

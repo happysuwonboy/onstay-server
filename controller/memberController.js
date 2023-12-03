@@ -4,6 +4,24 @@ import { createAccessToken, createRefreshToken, removeAllToken } from '../util/t
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants/secureConstatns.js';
 import jwt from 'jsonwebtoken';
 
+
+export async function getUserInfo(req,res) {
+  const user_id = req.params.user_id;
+  const userInfo = await memberRepository.getUserInfo(user_id); // 패스워드 정보까지 다 받아옴
+  
+  let body = []
+
+  try {
+    let {hashPw, ...rest} = userInfo; // 패스워드를 제외한 정보를 보내주도록 pw 프로퍼티를 걸러냄
+    body = rest
+  } catch(error) {
+    console.log(error);
+  }
+
+  res.status(200).send(body)
+} 
+
+
 export async function userIdDuplicationCheck(req, res) {
   const { user_id } = req.params;
   const result = await memberRepository.getUserInfo(user_id)

@@ -23,3 +23,14 @@ export async function updateViewCount(req, res) {
   const result = await noticeRepository.updateViewCount(notice_id);
   res.json(result);
 };
+
+/**
+ * noticeDetail
+ * @param {*} req notice_id
+ * @param {*} res 각 공지사항별 데이터
+ */
+export async function geDetailNotice(req, res) {
+  const notice_id = req.params.noticeid;
+  const result = await noticeRepository.geDetailNotice(notice_id);
+  res.json(result);
+};

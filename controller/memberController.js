@@ -15,7 +15,7 @@ export async function getUserInfo(req,res) {
     let {hashPw, ...rest} = userInfo; // 패스워드를 제외한 정보를 보내주도록 pw 프로퍼티를 걸러냄
     body = rest
   } catch(error) {
-    console.log(error);
+    console.log('no userInfo');
   }
 
   res.status(200).send(body)

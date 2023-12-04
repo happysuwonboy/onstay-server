@@ -10,6 +10,7 @@ import myPageRouter from './router/myPageRouter.js';
 import cookieParser from 'cookie-parser';
 import findStayRouter from './router/findStayRouter.js';
 import noticeRouter from './router/noticeRouter.js';
+import imgRouter from './router/imgRouter.js'
 
 const server = express();
 const PORT = 8000;
@@ -32,5 +33,6 @@ server.use('/reservation', reservationRouter);
 server.use('/member', memberRouter)
 server.use('/mypage', myPageRouter);
 server.use('/findstay', findStayRouter);
+server.use('/getimg', imgRouter)
 
 server.listen(PORT, ()=>{console.log(`listening on ${PORT}`)});

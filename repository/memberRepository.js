@@ -3,7 +3,7 @@ import {db} from '../db/database.js'
 export async function getUserInfo(user_id) {
   return db
   .execute(`select user_passwd as hashPw, user_name, user_email, user_phone, 
-                  user_img, user_img, join_date, user_role 
+                  user_img, join_date, user_role 
                   from user where user_id=?`, [user_id])
   .then(result => result[0][0])
   .catch(console.error)

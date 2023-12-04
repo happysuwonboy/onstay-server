@@ -3,6 +3,7 @@ import * as newStayController from '../controller/newStayController.js';
 
 const router = express.Router();
 
-router.get('/', newStayController.getList);
+router.get('/home', newStayController.getList);
+router.post('/', newStayController.getAccList);
 
 export default router;

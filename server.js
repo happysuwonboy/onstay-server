@@ -9,6 +9,7 @@ import memberRouter from './router/memberRouter.js';
 import myPageRouter from './router/myPageRouter.js';
 import cookieParser from 'cookie-parser';
 import findStayRouter from './router/findStayRouter.js';
+import noticeRouter from './router/noticeRouter.js';
 
 const server = express();
 const PORT = 8000;
@@ -25,6 +26,7 @@ server.use(cookieParser())
 server.use('/', categoryRouter);
 server.use('/acc', accRouter);
 server.use('/newstay', newStayRouer);
+server.use('/notice', noticeRouter);
 server.use('/room', roomRouter);
 server.use('/reservation', reservationRouter);
 server.use('/member', memberRouter)

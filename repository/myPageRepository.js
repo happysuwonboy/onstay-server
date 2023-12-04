@@ -13,6 +13,13 @@ export async function getUserReservation(user_id) {
     .catch(err => console.log(err))
 }
 
+export async function cancelReservation(reservation_id) {
+  return db
+  .execute(`delete from reservation where reservation_id=?`,[reservation_id])
+  .then(result => 'ok')
+  .catch(err => console.log(err))
+}
+
 export async function getUpcomingReservation(user_id) {
   return db
   .execute(`select count(*) as cnt from reservation where user_id=? and curdate() <= left(checkin,10)`,[user_id])

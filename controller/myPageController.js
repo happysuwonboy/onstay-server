@@ -22,6 +22,21 @@ export async function getUserReservation(req,res) {
 }
 
 
+export async function cancelReservation(req,res) {
+  let reservation_id = req.body.reservation_id;
+
+  let result = await myPageRepository.cancelReservation(reservation_id);
+
+  if (result==='ok') {
+    res.status(204).send({message : 'cancel success'})
+  } else {
+    res.status(500).send({message : '서버 에러가 발생하여 예약 취소에 실패하였습니다.'})
+  }
+}
+
+
+
+
 export async function editPassword(req,res) {
   const {user_id, current_pw, new_pw} = req.body;
   const userInfo = await memberRepository.getUserInfo(user_id)

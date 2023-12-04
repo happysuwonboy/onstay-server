@@ -25,13 +25,16 @@ const uploadMiddleWare = profileImgUpload.single('file')
 // 유저 별 예약 정보 뿌려주는 api
 router.get('/reservation/:user_id', myPageController.getUserReservation)
 
+// 예약 취소 api
+router.delete('/reservation', myPageController.cancelReservation)
+
 // 유저 패스워드 변경 api 
 router.post('/edit/pw', myPageController.editPassword)
 
 // 유저 정보 변경 api
-router.post('/edit/userinfo', uploadMiddleWare,  myPageController.editUserInfo)
+router.post('/edit/userinfo', uploadMiddleWare,  myPageController.editUserInfo) 
 
-// 유저 탈퇴 api
+// 유저 탈퇴 api 
 router.delete('/quit', myPageController.quitMember)
 
 export default router

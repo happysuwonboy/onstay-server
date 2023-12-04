@@ -1,4 +1,4 @@
-import * as categoryRepository from '../repository/cateogryRepository.js';
+import * as categoryRepository from '../repository/categoryRepository.js';
 
 /**
  * getAccOnly : 오직 onStayHouse에서만 존재하는 숙소 리스트 조회 (swiper)
@@ -21,7 +21,7 @@ export async function getAccPrice(req, res) {
 }
 
 /**
- * getCategoryImg : 숙소 조건에 따른 숙소당 이미지 한개 조회 (swiper)
+ * getAccImg : 숙소 조건에 따른 숙소당 이미지 한개 조회 (swiper)
  * @param {*} req 
  * @param {*} res 
  */

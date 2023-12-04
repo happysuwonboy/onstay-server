@@ -3,6 +3,8 @@ import cors from 'cors';
 import newStayRouer from './router/newStayRouter.js';
 import categoryRouter from './router/categoryRouter.js';
 import accRouter from './router/accRouter.js';
+import roomRouter from './router/roomRouter.js';
+import reservationRouter from './router/reservationRouter.js'
 import memberRouter from './router/memberRouter.js';
 import myPageRouter from './router/myPageRouter.js';
 import cookieParser from 'cookie-parser';
@@ -21,8 +23,10 @@ server.use(express.urlencoded());
 server.use(cookieParser())
 
 server.use('/', categoryRouter);
-server.use('/acc', accRouter)
+server.use('/acc', accRouter);
 server.use('/newstay', newStayRouer);
+server.use('/room', roomRouter);
+server.use('/reservation', reservationRouter);
 server.use('/member', memberRouter)
 server.use('/mypage', myPageRouter);
 server.use('/findstay', findStayRouter);

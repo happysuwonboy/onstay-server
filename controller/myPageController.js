@@ -91,3 +91,17 @@ export async function quitMember(req,res) {
     return res.status(500).send({message : '서버 에러가 발생하여 회원 탈퇴에 실패하였습니다.'})
   }
 }
+
+
+export async function postQuestion(req,res) {
+  const params = Object.values(req.body);
+
+  let result = await myPageRepository.postQuestion(params);
+  
+  if (result === 'ok') {
+    res.status(201).send({message : '1:1 문의를 등록하였습니다. 최대한 빠르게 답변해드리겠습니다.'})
+  } else {
+    res.status(404).send({message : '에러가 발생하여 1:1 문의 등록에 실패하였습니다.'})
+  }
+  
+}

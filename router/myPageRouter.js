@@ -37,4 +37,7 @@ router.post('/edit/userinfo', uploadMiddleWare,  myPageController.editUserInfo)
 // 유저 탈퇴 api 
 router.delete('/quit', myPageController.quitMember)
 
+// 1:1 문의 작성 api
+router.post('/question', myPageController.postQuestion)
+
 export default router

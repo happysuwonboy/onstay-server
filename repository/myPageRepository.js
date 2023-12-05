@@ -49,3 +49,11 @@ export async function quitMember(user_id) {
   .then(result => 'ok')
   .catch(err => console.log(err))
 }
+
+export async function postQuestion(params) {
+  return db
+  .execute(`insert into question(user_id,question_category, question_title, question_content,update_date)
+            values(?,?,?,?,sysdate())`, params)
+  .then(result => 'ok')
+  .catch(err => console.log(err))
+}

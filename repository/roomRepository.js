@@ -14,7 +14,7 @@ export async function getAccRoom(roomId) {
                     and rm.acc_id in (select acc_id from room where room_id = ?)`;
 
   return db
-    .execute(sql, [roomId])
+    .execute(sql, [roomId]) 
     .then(result => result[0]);
 };
 

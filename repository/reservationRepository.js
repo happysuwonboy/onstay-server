@@ -33,22 +33,36 @@ export async function getUserInfo(userId) {
 }
 
 /**
+ * isReservation : 예약 내역 날짜 포함 조회
+ * @param {*} data 
+ * @returns row 데이터
+ */
+export async function isReservation(data) {
+  const { roomId, startDate, endDate } = data;
+  const sql = `select count(*) cnt from reservation
+                where room_id = ?
+                and ( DATE_ADD(?, INTERVAL 1 DAY) < checkout and DATE_ADD(?, INTERVAL 1 DAY) > checkin );`
+
+  return db
+    .execute(sql, [roomId, startDate, endDate])
+    .then(result => result[0][0]);
+}
+
+/**
  * insertReservation : 결제 완료한 예약 내역 정보 insert 
  * @param {*} data :  userId, roomId, startDate, endDate
  * @returns 성공 여부 메세지
  */
 export async function insertReservation(data) {
   const { userId, roomId, startDate, endDate } = data;
-
   const sql = `insert into
                   reservation (user_id, room_id, pay_date, checkin, checkout)
-                  values(?, ?, sysdate(), ?, ?)`;
+                  values(?, ?, sysdate(), DATE_ADD(?, INTERVAL 1 DAY), DATE_ADD(?, INTERVAL 1 DAY))`;
 
   return db
     .execute(sql, [ userId, roomId, startDate, endDate ])
     .then(result => 'insert ok');
 }
-
 
 /**
  * deleteCoupon : 쿠폰 사용 여부에 따른 쿠폰 정보 delete

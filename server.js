@@ -20,6 +20,7 @@ server.use(cors({
   credentials : true,
   methods : ['GET', 'POST', 'DELETE']
 }));
+
 server.use(express.json());
 server.use(express.urlencoded());
 server.use(cookieParser())

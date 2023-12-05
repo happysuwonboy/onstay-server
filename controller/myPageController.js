@@ -35,8 +35,6 @@ export async function cancelReservation(req,res) {
 }
 
 
-
-
 export async function editPassword(req,res) {
   const {user_id, current_pw, new_pw} = req.body;
   const userInfo = await memberRepository.getUserInfo(user_id)
@@ -103,5 +101,10 @@ export async function postQuestion(req,res) {
   } else {
     res.status(404).send({message : '에러가 발생하여 1:1 문의 등록에 실패하였습니다.'})
   }
-  
+}
+
+export async function getQuestions(req,res) {
+  const user_id = req.params.user_id
+  const rows = await myPageRepository.getQuestions(user_id);
+  res.status(200).send(rows)
 }

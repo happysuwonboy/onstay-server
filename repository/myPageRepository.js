@@ -57,3 +57,13 @@ export async function postQuestion(params) {
   .then(result => 'ok')
   .catch(err => console.log(err))
 }
+
+export async function getQuestions(user_id) {
+  return db
+  .execute(`select row_number() over() as rno, q.question_id, question_category, question_title, question_content, 
+                   left(q.update_date,10) as update_date, if(a.question_id is not null, 1, 0) as answer_state from 
+                   question q left outer join answer a on q.question_id = a.question_id
+                   where q.user_id=? order by q.update_date desc`, [user_id])
+  .then(result => result[0])
+  .catch(err => console.log(err))
+}

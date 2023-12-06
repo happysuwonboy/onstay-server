@@ -22,28 +22,49 @@ const profileImgUpload = multer({
 
 const uploadMiddleWare = profileImgUpload.single('file')
 
-// 유저 별 예약 정보 뿌려주는 api
+{/**예약 */}
+
+// 유저 별 예약 내역 뿌려주는 api
 router.get('/reservation/:user_id', myPageController.getUserReservation)
 
 // 예약 취소 api
 router.delete('/reservation', myPageController.cancelReservation)
 
+
+{/* 회원 정보 수정 */}
+
 // 유저 패스워드 변경 api 
 router.post('/edit/pw', myPageController.editPassword)
 
-// 유저 정보 변경 api
+// 유저 정보 변경 api (프로필 사진 파일 업로드 포함)
 router.post('/edit/userinfo', uploadMiddleWare,  myPageController.editUserInfo) 
 
 // 유저 탈퇴 api 
 router.delete('/quit', myPageController.quitMember)
 
-// 1:1 문의 작성 api
+
+{/**1:1 문의 */}
+
+// 1:1 문의 등록 
 router.post('/question', myPageController.postQuestion)
 
 // 1:1 문의 아이디로 정보 조회
 router.get('/question/:question_id', myPageController.getQuestion)
 
-// 유저 별 1:1 문의 내역 조회 api
+// 1:1 문의 수정 
+router.put('/question', myPageController.updateQuestion)
+
+// 1:1 문의 삭제
+router.delete('/question', myPageController.deleteQuestion)
+
+// 유저 별 1:1 모든 문의 내역 조회 api
 router.get('/questions/:user_id', myPageController.getQuestions)
+
+
+{/**쿠폰 */}
+
+// 유저 별 모든 쿠폰 조회
+router.get('/coupons/:user_id', myPageController.getCoupons)
+
 
 export default router

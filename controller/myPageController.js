@@ -103,6 +103,26 @@ export async function postQuestion(req,res) {
   }
 }
 
+export async function updateQuestion(req,res) {
+  const {question_category, question_title, question_content, question_id} = req.body;
+  const result = await myPageRepository.updateQuestion([question_category, question_title, question_content, question_id]);
+  if (result === 'ok') {
+    res.status(201).send({message : 'ok'})
+  } else {
+    res.status(404).send({message : '에러가 발생하여 1:1 문의 등록에 실패하였습니다.'})
+  }
+}
+
+export async function deleteQuestion(req,res) {
+  const question_id = req.body.question_id
+  const result = await myPageRepository.deleteQuestion(question_id);
+  if (result === 'ok') {
+    res.status(204).send({message : 'ok'})
+  } else {
+    res.status(404).send({message : '에러가 발생하여 1:1 문의 등록에 실패하였습니다.'})
+  }
+}
+
 export async function getQuestion(req,res) {
   const question_id = req.params.question_id;
   const question = await myPageRepository.getQuestion(question_id);
@@ -114,3 +134,13 @@ export async function getQuestions(req,res) {
   const rows = await myPageRepository.getQuestions(user_id);
   res.status(200).send(rows)
 }
+
+
+
+{/**쿠폰 */}
+
+export async function getCoupons(req,res) {
+  const user_id = req.params.user_id;
+  const rows = await myPageRepository.getCoupons(user_id);
+  res.status(200).send(rows)
+} 

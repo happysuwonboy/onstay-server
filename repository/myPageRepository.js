@@ -58,6 +58,21 @@ export async function postQuestion(params) {
   .catch(err => console.log(err))
 }
 
+export async function updateQuestion(params) {
+  return db
+  .execute(`update question set question_category=?, question_title=?, question_content=?, update_date=sysdate()
+            where question_id=?`,params)
+  .then(result => 'ok')
+  .catch(err => console.log(err))
+}
+
+export async function deleteQuestion(question_id) {
+  return db
+  .execute(`delete from question where question_id=?`,[question_id])
+  .then(result => 'ok')
+  .catch(err => console.log(err))
+}
+
 export async function getQuestion(question_id) {
   return db
   .execute(`select user_id, question_category, question_title, question_content, 
@@ -74,6 +89,14 @@ export async function getQuestions(user_id) {
                    left(q.update_date,10) as update_date, if(a.question_id is not null, 1, 0) as answer_state from 
                    question q left outer join answer a on q.question_id = a.question_id
                    where q.user_id=? order by q.update_date desc`, [user_id])
+  .then(result => result[0])
+  .catch(err => console.log(err))
+}
+
+export async function getCoupons(user_id) {
+  return db
+  .execute(`select coupon_id, coupon_name, discount_price 
+            from coupon where user_id=?`,[user_id])
   .then(result => result[0])
   .catch(err => console.log(err))
 }

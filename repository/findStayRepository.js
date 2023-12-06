@@ -1,8 +1,24 @@
 import {db} from '../db/database.js';
 
 /* 전체 숙소 리스트 조회 */
-export async function getAccList({ personnel, minPrice, maxPrice, sort, checkin, checkout }) {
-    const sql = `SELECT 
+export async function getAccList({ checkin, checkout, sort }) {
+    let filteredSort='';
+    if(sort==='latest'){
+        filteredSort = 'register_date desc';
+    }else if(sort==='highPrice'){
+        filteredSort='MIN(rm.room_price) desc';
+    }else if(sort==='lowPrice'){
+        filteredSort='MIN(rm.room_price) asc';
+    }else{
+        filteredSort='love desc';
+    }
+    
+    const sql = `
+    select 
+    *
+    from (
+                SELECT 
+                    row_number() over (order by ${filteredSort}) as no,
                     acc.acc_id, 
                     acc.acc_name, 
                     acc.parking, 
@@ -12,16 +28,14 @@ export async function getAccList({ personnel, minPrice, maxPrice, sort, checkin,
                     acc.love, 
                     acc.area_code, 
                     acc.register_date,
-                    GROUP_CONCAT(DISTINCT acc_img.acc_img) AS acc_img,
-                    MIN(format(rm.room_price,0)) AS room_price,
+                    MIN(rm.room_price) AS room_price,
                     MIN(rm.min_capa) AS min_capa,
-                    MAX(rm.max_capa) AS max_capa
+                    MAX(rm.max_capa) AS max_capa,
+                    GROUP_CONCAT(DISTINCT acc_img.acc_img) AS acc_img
                 FROM 
                     accommodation acc, acc_img acc_img, room rm
                 WHERE acc.acc_id = acc_img.acc_id
                 AND acc.acc_id = rm.acc_id
-                ${personnel ? `AND ${personnel} <= rm.max_capa` : ''}
-                ${minPrice && maxPrice ? `AND room_price BETWEEN ${minPrice} AND ${maxPrice}` : ''}
                 ${(checkin !== undefined && checkout !== undefined) ? 
                     `AND acc.acc_id NOT IN (
                         SELECT rm.acc_id
@@ -45,13 +59,12 @@ export async function getAccList({ personnel, minPrice, maxPrice, sort, checkin,
                     acc.register_date,
                     acc.area_code
                 ORDER BY
-                    ${sort==='latest'?'register_date desc'
-                    : sort==='highPrice'?'room_price desc'
-                    : sort==='lowPrice'?'room_price asc'
-                    : 'love desc'};
-                `;
+                    ${filteredSort}
+    )  as acclist `;
+    // WHERE no BETWEEN ? AND ?`;
+    // console.log(startIndex, endIndex);
 
     return db
     .execute(sql)
-    .then((rows) => rows[0])
+    .then((rows) => rows[0]);
 }

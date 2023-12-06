@@ -1,7 +1,7 @@
 import {db} from '../db/database.js';
 
 /* 전체 숙소 리스트 조회 */
-export async function getAccList({ checkin, checkout, sort }) {
+export async function getAccList({ searched, location, checkin, checkout,  personnel, minPrice, maxPrice, isParking, isCook, isPet, isBreakfast, sort }) {
     let filteredSort='';
     if(sort==='latest'){
         filteredSort = 'register_date desc';
@@ -12,11 +12,11 @@ export async function getAccList({ checkin, checkout, sort }) {
     }else{
         filteredSort='love desc';
     }
-    
+
     const sql = `
-    select 
-    *
-    from (
+            SELECT 
+            *
+            FROM (
                 SELECT 
                     row_number() over (order by ${filteredSort}) as no,
                     acc.acc_id, 
@@ -36,6 +36,8 @@ export async function getAccList({ checkin, checkout, sort }) {
                     accommodation acc, acc_img acc_img, room rm
                 WHERE acc.acc_id = acc_img.acc_id
                 AND acc.acc_id = rm.acc_id
+                AND acc.acc_name LIKE '%${searched}%'
+                ${location==='전체' ? '' : `AND acc.area_code='${location}'`}
                 ${(checkin !== undefined && checkout !== undefined) ? 
                     `AND acc.acc_id NOT IN (
                         SELECT rm.acc_id
@@ -48,6 +50,12 @@ export async function getAccList({ checkin, checkout, sort }) {
                         )
                     )` : ''
                 }
+                ${personnel ? `AND ${personnel} <= rm.max_capa` : ''}
+                ${minPrice && maxPrice ? `AND room_price BETWEEN ${minPrice} AND ${maxPrice}` : ''}
+                ${isParking==='0' ? `AND (acc.parking=0 OR acc.parking=1)` : `AND acc.parking=1`}
+                ${isCook==='0' ? `AND (acc.cook=0 OR acc.cook=1)` : `AND acc.cook=1`}
+                ${isPet==='0' ? `AND (acc.pet=0 OR acc.pet=1)` : `AND acc.pet=1`}
+                ${isBreakfast==='0' ? `AND (acc.breakfast=0 OR acc.breakfast=1)` : `AND acc.breakfast=1`}
                 GROUP BY 
                     acc.acc_id, 
                     acc.acc_name, 
@@ -61,7 +69,7 @@ export async function getAccList({ checkin, checkout, sort }) {
                 ORDER BY
                     ${filteredSort}
     )  as acclist `;
-    // WHERE no BETWEEN ? AND ?`;
+    // WHERE no BETWEEN ${startIndex} AND ${endIndex}`;
     // console.log(startIndex, endIndex);
 
     return db

@@ -34,3 +34,27 @@ export async function geDetailNotice(req, res) {
   const result = await noticeRepository.geDetailNotice(notice_id);
   res.json(result);
 };
+
+/**
+ * NoticeAdd
+ * @param {*} req 공지사항 title, content, imagefile
+ * @param {*} res 'ok'
+ */
+export async function insertNotice(req, res) {
+  const { title, content } = req.body;
+  const imageFile = req.file.originalname;
+  const result = await noticeRepository.insertNotice({title, content, imageFile});
+  res.json(result);
+};
+
+/**
+ * NoticeDelete
+ * @param {*} req 체크된 공지사항
+ * @param {*} res 'ok'
+ */
+export async function deleteNotice(req, res) {
+  const { checkedItems } = req.body;
+  console.log(checkedItems);
+  const result = await noticeRepository.deleteNotice(checkedItems);
+  res.json(result);
+}

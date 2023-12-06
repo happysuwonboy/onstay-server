@@ -40,7 +40,10 @@ router.delete('/quit', myPageController.quitMember)
 // 1:1 문의 작성 api
 router.post('/question', myPageController.postQuestion)
 
-// 1:1 문의 조회 api
-router.get('/question/:user_id', myPageController.getQuestions)
+// 1:1 문의 아이디로 정보 조회
+router.get('/question/:question_id', myPageController.getQuestion)
+
+// 유저 별 1:1 문의 내역 조회 api
+router.get('/questions/:user_id', myPageController.getQuestions)
 
 export default router

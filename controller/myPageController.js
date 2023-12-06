@@ -103,6 +103,12 @@ export async function postQuestion(req,res) {
   }
 }
 
+export async function getQuestion(req,res) {
+  const question_id = req.params.question_id;
+  const question = await myPageRepository.getQuestion(question_id);
+  res.status(200).send(question)
+}
+
 export async function getQuestions(req,res) {
   const user_id = req.params.user_id
   const rows = await myPageRepository.getQuestions(user_id);

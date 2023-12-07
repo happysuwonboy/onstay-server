@@ -6,9 +6,9 @@ import * as roomRepository from '../repository/roomRepository.js';
  * @param {*} res 
  */
 export async function getAccRoom(req, res) {
-  const roomid = req.params.roomid;
+  const roomId = req.params.roomid;
 
-  const rows = await roomRepository.getAccRoom(roomid);
+  const rows = await roomRepository.getAccRoom(roomId);
   res.json(rows);
 }
 
@@ -18,8 +18,8 @@ export async function getAccRoom(req, res) {
  * @param {*} res 
  */
 export async function getRoomDate(req, res) {
-  const roomid = req.params.roomid;
+  const roomId = req.params.roomid;
 
-  const rows = await roomRepository.getRoomDate(roomid);
+  const rows = await roomRepository.getRoomDate(roomId);
   res.json(rows);
 }

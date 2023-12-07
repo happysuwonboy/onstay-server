@@ -76,7 +76,6 @@ export async function quitMember(req,res) {
   const user_id = req.body.user_id;
 
   const isReservationExist = await myPageRepository.getUpcomingReservation(user_id)
-  console.log(isReservationExist);
 
   if (isReservationExist) return res.status(422).send({message : '다가오는 예약이 있습니다. 예약을 취소한 뒤 탈퇴해주세요.'})
 
@@ -144,3 +143,21 @@ export async function getCoupons(req,res) {
   const rows = await myPageRepository.getCoupons(user_id);
   res.status(200).send(rows)
 } 
+
+
+{/** 관심 스테이 */}
+
+export async function getLoveStay(req,res) {
+  const user_id = req.params.user_id;
+  const rows = await myPageRepository.getLoveStay(user_id);
+
+  if (!rows.length) return res.status(200).send([]);
+
+  let data = []
+  for (let row of rows) {
+    let images = await accRepository.getAccImages(row.acc_id) 
+    let rowWithImgs = {...row, images}
+    data.push(rowWithImgs)
+  }
+  res.status(200).send(data);
+}

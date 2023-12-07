@@ -100,3 +100,18 @@ export async function getCoupons(user_id) {
   .then(result => result[0])
   .catch(err => console.log(err))
 }
+
+
+export async function getLoveStay(user_id) {
+  return db
+  .execute(`select love_id, ac.acc_id, acc_name, min_capa, max_capa, room_price, area_code from acc_love lv 
+            inner join 
+            (select acc_name, ac.acc_id, min(min_capa) as min_capa, max(max_capa) as max_capa,
+            min(room_price) as room_price, area_code
+            from accommodation ac inner join room rm 
+            on ac.acc_id=rm.acc_id group by ac.acc_id) ac
+            on lv.acc_id = ac.acc_id
+            where lv.user_id=?`,[user_id])
+  .then(result => result[0])
+  .catch(err => console.log(err))
+}

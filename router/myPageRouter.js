@@ -67,4 +67,11 @@ router.get('/questions/:user_id', myPageController.getQuestions)
 router.get('/coupons/:user_id', myPageController.getCoupons)
 
 
+{/* 관심 스테이 */}
+
+// 유저별 좋아요 누른 숙소 조회
+router.get('/lovestay/:user_id', myPageController.getLoveStay)
+
+
+
 export default router

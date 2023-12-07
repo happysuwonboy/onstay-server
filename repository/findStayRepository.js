@@ -76,3 +76,35 @@ export async function getAccList({ searched, location, checkin, checkout,  perso
     .execute(sql)
     .then((rows) => rows[0]);
 }
+
+export async function getLoveAccList({ userId }){
+    const sql = `select acc_id from acc_love where user_id = '${userId}';`;
+
+    return db
+    .execute(sql)
+    .then((rows) => rows[0]);
+}
+export async function addLove({ userId, accId }){
+    const sql = `insert into acc_love(user_id, acc_id) values('${userId}', '${accId}');`;
+    console.log(userId, accId)
+    return db
+    .execute(sql)
+    .then((result) => 'ok');
+}
+
+export async function removeLove({ userId, accId }){
+    const sql = `delete from acc_love where user_id = '${userId}' and acc_id = '${accId}';`;
+
+    return db
+    .execute(sql)
+    .then((result) => 'ok');
+}
+
+export async function addAccLove({ accId }){
+    const sql = `update accommodation set love = love + 1 where acc_id = '${accId}';`;
+
+    return db
+    .execute(sql)
+    .then((result) => 'ok');
+}
+

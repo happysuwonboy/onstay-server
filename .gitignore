@@ -1,2 +1,9 @@
 /node_modules
 .gitmessage.txt
+
+# 안에 있는 모든 파일을 무시
+/uploads/userprofile/*
+
+
+# gitkeep은 무조건 무시되지 않도록 함
+!.gitkeep

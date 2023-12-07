@@ -25,4 +25,5 @@ router.get('/userinfo/:user_id', memberController.getUserInfo);
 
 
 
+
 export default router

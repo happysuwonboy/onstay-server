@@ -42,8 +42,8 @@ export async function geDetailNotice(req, res) {
  */
 export async function insertNotice(req, res) {
   const { title, content } = req.body;
-  const imageFile = req.file.originalname;
-  const result = await noticeRepository.insertNotice({title, content, imageFile});
+  const imageFile = req.file?.filename || null;
+  const result = await noticeRepository.insertNotice({ title, content, imageFile });
   res.json(result);
 };
 
@@ -54,7 +54,13 @@ export async function insertNotice(req, res) {
  */
 export async function deleteNotice(req, res) {
   const { checkedItems } = req.body;
-  console.log(checkedItems);
   const result = await noticeRepository.deleteNotice(checkedItems);
+  res.json(result);
+}
+
+export async function updateNotice(req, res) {
+  const { title, content } = req.body;
+  const imageFile = req.file?.filename || null;
+  const result = await noticeRepository.updateNotice({ title, content, imageFile });
   res.json(result);
 }

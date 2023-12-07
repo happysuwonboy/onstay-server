@@ -10,9 +10,11 @@ import myPageRouter from './router/myPageRouter.js';
 import cookieParser from 'cookie-parser';
 import findStayRouter from './router/findStayRouter.js';
 import noticeRouter from './router/noticeRouter.js';
+import path from 'path';
 
 const server = express();
 const PORT = 8000;
+const currentDir = path.dirname(new URL(import.meta.url).pathname);
 
 server.use(cors({
   origin : 'http://localhost:3000',
@@ -21,7 +23,8 @@ server.use(cors({
 }));
 server.use(express.json());
 server.use(express.urlencoded());
-server.use(cookieParser())
+server.use(cookieParser());
+server.use('/uploads', express.static(path.join(currentDir, 'uploads')));// 이미지 서빙 미들웨어
 
 server.use('/', categoryRouter);
 server.use('/acc', accRouter);

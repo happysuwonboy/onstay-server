@@ -13,7 +13,7 @@ import { db } from '../db/database.js';
 export async function getNoticeList({ startIndex, endIndex, searchTerm, selectOption, startDate, endDate }) {
   let sql = `
   select 
-  no, notice_id, notice_title, notice_content, notice_date, notice_views,
+  no, notice_id, notice_title, notice_content, notice_date, notice_views, notice_img,
   (select count(*) from notice`
   if (selectOption === 'title' || startDate === null || endDate === null) {
     sql += ` where notice_title like ?) as total_rows
@@ -23,7 +23,8 @@ export async function getNoticeList({ startIndex, endIndex, searchTerm, selectOp
       notice_title,
       notice_content,
       date_format(notice_date, '%Y - %m - %d') as notice_date,
-      notice_views
+      notice_views,
+      notice_img
     from notice
     where notice_title like ?`
   } else if (selectOption === 'date') {
@@ -34,7 +35,8 @@ export async function getNoticeList({ startIndex, endIndex, searchTerm, selectOp
       notice_title,
       notice_content,
       date_format(notice_date, '%Y - %m - %d') as notice_date,
-      notice_views
+      notice_views,
+      notice_img
     from notice
     where notice_date between date_add(?, interval 1 day) and date_add(?, interval 1 day)`
   }
@@ -120,3 +122,7 @@ export async function deleteNotice(checkedItems) {
     .execute(sql, checkedItems)
     .then(result => 'ok')
 };
+
+export async function updateNotice({ title, content, imageFile }) {
+
+}

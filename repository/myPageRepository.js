@@ -1,24 +1,12 @@
 import { db } from '../db/database.js';
 
-
-export async function getUserReservation(user_id) {
-  return db
-    .execute(`select reservation_id, acc_name, rm.acc_id, room_name,
-                pay_date, checkin, checkout, room_price,
-                acc_checkin checkin_time, acc_checkout checkout_time
-              from reservation rs inner join room rm inner join accommodation ac
-              on rs.room_id = rm.room_id and rm.acc_id = ac.acc_id
-               where user_id = ? order by checkin asc`, [user_id])
-    .then(result => result[0].length ? result[0] : 'no result')
-    .catch(err => console.log(err))
-}
-
-export async function getUpcomingReservations(user_id, filter='') {
+export async function getUserReservations(user_id, filter='') {
   return db
   .execute(`select reservation_id, ac.acc_id, room_name, left(pay_date,10) pay_date,
-            left(checkin,10) checkin_date, left(checkout,10) checkout_date, room_price,
-            acc_checkin checkout_time, acc_checkout checkout_time,
-            if(datediff(checkin,now()) <= 2, false, true) as isCancelable
+            left(checkin,10) checkin_date, left(checkout,10) checkout_date,
+            acc_checkin checkin_time, acc_checkout checkout_time, acc_name, 
+            if(datediff(checkin,now()) <= 2, false, true) as isCancelable,
+            abs(datediff(checkin, checkout)*room_price) as pay_price
             from reservation rs inner join room rm inner join accommodation ac
             on rs.room_id = rm.room_id and rm.acc_id = ac.acc_id
             where ${filter} user_id=?

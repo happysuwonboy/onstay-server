@@ -5,22 +5,6 @@ import {removeAllToken} from '../util/token.js';
 import bcrypt from 'bcrypt';
 
 
-export async function getUserReservation(req,res) {
-  const user_id = req.params.user_id;
-  const reservsations = await myPageRepository.getUserReservation(user_id);
-
-  if (reservsations === 'no result') return res.status(200).send([])
-
-  const result = []; 
-  
-  for (const reservation of reservsations) {
-    const images = await accRepository.getAccImages(reservation.acc_id);
-    result.push({...reservation, images})
-  }
-
-  res.status(200).send(result)
-}
-
 export async function getUserReservations(req,res) {
   const {user_id, category} = req.params;
   
@@ -33,8 +17,17 @@ export async function getUserReservations(req,res) {
     filter=''
   }
 
-  const rows = await myPageRepository.getUpcomingReservations(user_id, filter);
-  res.status(200).send(rows)
+  const rows = await myPageRepository.getUserReservations(user_id, filter);
+
+  if (!rows.length) return res.status(200).send([])
+
+  const body = [];
+  for (const row of rows) {
+    const images = await accRepository.getAccImages(row.acc_id);
+    body.push({...row, images})
+  }
+
+  res.status(200).send(body)
 }
 
 

@@ -24,9 +24,6 @@ const uploadMiddleWare = profileImgUpload.single('file')
 
 {/**예약 */}
 
-// 유저 별 예약 내역 뿌려주는 api
-router.get('/reservation/:user_id', myPageController.getUserReservation)
-
 // 유저 별 예약 내역 뿌려주는 api (all : 전체,  upcoming : 다가오는 예약, complete : 이용 완료)
 router.get('/reservation/:category/:user_id', myPageController.getUserReservations)
 

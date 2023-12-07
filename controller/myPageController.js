@@ -21,6 +21,22 @@ export async function getUserReservation(req,res) {
   res.status(200).send(result)
 }
 
+export async function getUserReservations(req,res) {
+  const {user_id, category} = req.params;
+  
+  let filter;
+  if (category==='upcoming') {
+    filter = 'datediff(checkin,now()) >= 0 and'
+  } else if (category==='complete') {
+    filter = 'datediff(checkin,now()) < 0 and'
+  } else { // 모든 예약내역 
+    filter=''
+  }
+
+  const rows = await myPageRepository.getUpcomingReservations(user_id, filter);
+  res.status(200).send(rows)
+}
+
 
 export async function cancelReservation(req,res) {
   let reservation_id = req.body.reservation_id;

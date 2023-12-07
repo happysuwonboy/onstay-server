@@ -13,6 +13,19 @@ export async function getUserReservation(user_id) {
     .catch(err => console.log(err))
 }
 
+export async function getUpcomingReservations(user_id, filter='') {
+  return db
+  .execute(`select reservation_id, ac.acc_id, room_name, left(pay_date,10) pay_date,
+            left(checkin,10) checkin_date, left(checkout,10) checkout_date, room_price,
+            acc_checkin checkout_time, acc_checkout checkout_time,
+            if(datediff(checkin,now()) <= 2, false, true) as isCancelable
+            from reservation rs inner join room rm inner join accommodation ac
+            on rs.room_id = rm.room_id and rm.acc_id = ac.acc_id
+            where ${filter} user_id=?
+            order by checkin_date desc`,[user_id])
+  .then(result=>result[0])
+}
+
 export async function cancelReservation(reservation_id) {
   return db
   .execute(`delete from reservation where reservation_id=?`,[reservation_id])

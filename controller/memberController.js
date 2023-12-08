@@ -36,10 +36,12 @@ export async function userJoin(req, res) {
   let result = await memberRepository.userJoin(params);
 
   if (result === 'success') {
-    res.status(201).end()
+    await memberRepository.addCoupon(user_id,'[신규 가입] 5000원 할인 쿠폰', 5000) // 신규 가입 쿠폰
+    res.status(201).send('회원가입 완료')
   } else {
-    res.status(409).end()
+    return res.status(409).end()
   }
+
 }
 
 export async function userLogin(req, res) {

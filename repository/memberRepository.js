@@ -20,6 +20,13 @@ export async function userJoin(params) {
   })
 }
 
+export async function addCoupon(user_id, coupon_name, discount_price) {
+  return db
+  .execute(`insert into coupon(user_id,coupon_name,discount_price) values(?,?,?)`, [user_id, coupon_name, discount_price])
+  .then(result => 'ok')
+  .catch(err => console.log(err))
+}
+
 
 export async function checkRefreshToken(user_id,refreshToken) {
   return db

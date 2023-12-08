@@ -41,7 +41,7 @@ export async function isReservation(data) {
   const { roomId, startDate, endDate } = data;
   const sql = `select count(*) cnt from reservation
                 where room_id = ?
-                and ( DATE_ADD(?, INTERVAL 1 DAY) < checkout and DATE_ADD(?, INTERVAL 1 DAY) > checkin );`
+                and ( date_add(?, interval 1 day) < checkout and date_add(?, interval 1 day) > checkin );`
 
   return db
     .execute(sql, [roomId, startDate, endDate])
@@ -57,7 +57,7 @@ export async function insertReservation(data) {
   const { userId, roomId, startDate, endDate } = data;
   const sql = `insert into
                   reservation (user_id, room_id, pay_date, checkin, checkout)
-                  values(?, ?, sysdate(), DATE_ADD(?, INTERVAL 1 DAY), DATE_ADD(?, INTERVAL 1 DAY))`;
+                  values(?, ?, sysdate(), date_add(?, interval 1 day), date_add(?, interval 1 day))`;
 
   return db
     .execute(sql, [ userId, roomId, startDate, endDate ])

@@ -26,17 +26,22 @@ export async function getLoveAccList(req, res) {
         console.error('유저가 좋아요 한 숙소 목록 가져오는 중 에러 발생 => ' + error);
     }
 }
+
 /* 좋아요 누르면 관심스테이 테이블에 추가, 삭제 */
 export async function addLove(req,res) {
     const { userId, accId } = req.body;
-
     try{
-        const result = await findStayRepository.addLove({ userId, accId });
+        const insertResult = await findStayRepository.addLove({ userId, accId });
+        if(res.json(insertResult) === 'ok'){
+            const updateResult = await findStayRepository.addAccLove({ accId });
+            (updateResult !== 'ok') &&  console.error('숙소테이블의 좋아요 수 증가시키는 중 에러 발생 => ' + error);
+        }
         res.json(result);
     }catch(error){
         console.error('관심스테이에 insert하는 중 에러 발생 => ' + error);
     }
 }
+
 export async function removeLove(req,res) {
     const { userId, accId } = req.body;
 
@@ -45,16 +50,5 @@ export async function removeLove(req,res) {
         res.json(result);
     }catch(error){
         console.error('관심스테이에서 delete 중 에러 발생 => ' + error);
-    }
-}
-/* 좋아요 누르면 숙소 좋아요 숫자 증가 */
-export async function addAccLove(req,res) {
-    const { accId } = req.body;
-
-    try{
-        const result = await findStayRepository.addAccLove({ accId });
-        res.json(result);
-    }catch(error){
-        console.error('숙소테이블의 좋아요 수 증가시키는 중 에러 발생 => ' + error);
     }
 }

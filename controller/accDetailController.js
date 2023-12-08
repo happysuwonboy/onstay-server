@@ -26,7 +26,6 @@ export async function getMap(req, res){
 
 export async function getReverve(req, res){
   const accid = req.params.accid;
-  console.log(accid);
   const result = await accDetailRepository.getReverve(accid);
   res.json(result);
 }

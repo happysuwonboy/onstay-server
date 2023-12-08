@@ -1,7 +1,9 @@
 import * as categoryRepository from '../repository/categoryRepository.js';
 
 /**
- * getAccOnly : 오직 onStayHouse에서만 존재하는 숙소 리스트 조회 (swiper)
+ * getAccOnly 
+ * onstayhouse에서만 존재하는 숙소 리스트 12개 조회 (swiper)
+ * label ( only, new 3개월 이내 boolean 타입 컬럼 )
  * @param {*} req 
  * @param {*} res 
  */
@@ -11,7 +13,9 @@ export async function getAccOnly(req, res) {
 }
 
 /**
- * getAccPrice : 20만원 이하의 가성비 숙소 리스트 조회 (swiper)
+ * getAccPrice
+ * 20만원 이하의 가성비 숙소 리스트 12개 조회 (swiper)
+ * label ( only, new 3개월 이내 boolean 타입 컬럼 추가 )
  * @param {*} req 
  * @param {*} res 
  */

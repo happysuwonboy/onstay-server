@@ -67,7 +67,7 @@ export async function updateViewCount(notice_id) {
 
   return db
     .execute(sql, [notice_id])
-    .then(result => 'ok')
+    .then(result => 'ok');
 };
 
 /**
@@ -87,8 +87,8 @@ export async function geDetailNotice(notice_id) {
 
   return db
     .execute(sql, [notice_id])
-    .then(rows => rows[0][0])
-}
+    .then(rows => rows[0][0]);
+};
 
 /**
  * NoticeAdd
@@ -105,7 +105,7 @@ export async function insertNotice({ title, content, imageFile }) {
 
   return db
     .execute(sql, [title, content, imageFile])
-    .then(result => 'ok')
+    .then(result => 'ok');
 };
 
 /**
@@ -120,9 +120,26 @@ export async function deleteNotice(checkedItems) {
 
   return db
     .execute(sql, checkedItems)
-    .then(result => 'ok')
+    .then(result => 'ok');
 };
 
-export async function updateNotice({ title, content, imageFile }) {
+/**
+ * NoticeUpdate
+ * @param {*} id 
+ * @param {*} title
+ * @param {*} content
+ * @param {*} imageFile
+ * @returns 'ok'
+ */
+export async function updateNotice({ id, title, content, imageFile }) {
+  const sql = `
+  update notice
+  set notice_img = ?, 
+    notice_title = ?, 
+    notice_content = ? 
+  where notice_id = ?`
 
-}
+  return db
+    .execute(sql, [imageFile, title, content, id])
+    .then(result => 'ok');
+};

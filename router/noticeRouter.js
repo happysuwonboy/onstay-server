@@ -24,7 +24,7 @@ const uploadMiddleWare = noticeImgUpload.single('file')
 
 router.post('/', noticeController.getNoticeList);
 router.post('/insert', uploadMiddleWare, noticeController.insertNotice);
-router.post('/update', noticeController.updateNotice);
+router.post('/update', uploadMiddleWare, noticeController.updateNotice);
 router.delete('/delete', noticeController.deleteNotice);
 router.get('/increase/:noticeId', noticeController.updateViewCount);
 router.get('/:noticeid/:page', noticeController.geDetailNotice);

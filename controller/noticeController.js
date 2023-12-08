@@ -58,9 +58,14 @@ export async function deleteNotice(req, res) {
   res.json(result);
 }
 
+/**
+ * NoticeUpdate
+ * @param {*} req id, title, content
+ * @param {*} res 'ok'
+ */
 export async function updateNotice(req, res) {
-  const { title, content } = req.body;
+  const { id, title, content } = req.body;
   const imageFile = req.file?.filename || null;
-  const result = await noticeRepository.updateNotice({ title, content, imageFile });
+  const result = await noticeRepository.updateNotice({ id, title, content, imageFile });
   res.json(result);
 }

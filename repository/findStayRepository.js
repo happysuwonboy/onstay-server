@@ -68,9 +68,9 @@ export async function getAccList({ searched, location, checkin, checkout,  perso
                     acc.area_code
                 ORDER BY
                     ${filteredSort}
-    )  as acclist `;
-    // WHERE no BETWEEN ${startIndex} AND ${endIndex}`;
-    // console.log(startIndex, endIndex);
+            )  as acclist `;
+            // WHERE no BETWEEN ${startIndex} AND ${endIndex}`;
+            // console.log(startIndex, endIndex);
 
     return db
     .execute(sql)
@@ -86,7 +86,6 @@ export async function getLoveAccList({ userId }){
 }
 export async function addLove({ userId, accId }){
     const sql = `insert into acc_love(user_id, acc_id) values('${userId}', '${accId}');`;
-    console.log(userId, accId)
     return db
     .execute(sql)
     .then((result) => 'ok');

@@ -9,5 +9,9 @@ router.get('/userprofile/:filename', (req,res) => {
     const filePath = path.join(__dirname, 'uploads', 'userprofile', req.params.filename)
     res.sendFile(filePath)
 })
+router.get('/noticeimg/:filename', (req,res) => {
+    const filePath = path.join(__dirname, 'uploads', 'noticefile', req.params.filename)
+    res.sendFile(filePath)
+})
 
 export default router

@@ -1,7 +1,7 @@
 import {db} from '../db/database.js';
 
 /* 전체 숙소 리스트 조회 */
-export async function getAccList({ searched, location, checkin, checkout,  personnel, minPrice, maxPrice, isParking, isCook, isPet, isBreakfast, sort }) {
+export async function getAccList({ searched, location, checkin, checkout,  personnel, minPrice, maxPrice, isParking, isCook, isPet, isBreakfast, sort, startIndex, endIndex }) {
     let sorted='';
     if(sort==='latest'){
         sorted = 'register_date desc';
@@ -68,14 +68,17 @@ export async function getAccList({ searched, location, checkin, checkout,  perso
                     acc.area_code
                 ORDER BY
                     ${sorted}
-            )  as acclist `;
-            // WHERE no BETWEEN ${startIndex} AND ${endIndex}`;
+            )  as acclist
+            WHERE no BETWEEN ${startIndex} AND ${endIndex}`;
             // console.log(startIndex, endIndex);
 
     return db
     .execute(sql)
     .then((rows) => rows[0]);
 }
+
+/* 숙소 좋아요 수 조회 */
+
 
 /* 관심스테이 테이블에서 유저가 좋아요 한 숙소id 목록 조회 */
 export async function getUserLoveAccList({ userId }){

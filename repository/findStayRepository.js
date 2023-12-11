@@ -28,7 +28,7 @@ export async function getAccList({ searched, location, checkin, checkout,  perso
                     acc.love, 
                     acc.area_code, 
                     acc.register_date,
-                    MIN(rm.room_price) AS room_price,
+                    MIN(FORMAT(rm.room_price,0)) AS room_price,
                     MIN(rm.min_capa) AS min_capa,
                     MAX(rm.max_capa) AS max_capa,
                     GROUP_CONCAT(DISTINCT acc_img.acc_img) AS acc_img
@@ -70,7 +70,6 @@ export async function getAccList({ searched, location, checkin, checkout,  perso
                     ${sorted}
             )  as acclist
             WHERE no BETWEEN ${startIndex} AND ${endIndex}`;
-            // console.log(startIndex, endIndex);
 
     return db
     .execute(sql)
@@ -78,7 +77,12 @@ export async function getAccList({ searched, location, checkin, checkout,  perso
 }
 
 /* 숙소 좋아요 수 조회 */
-
+export async function getAccLoveCount({ accId }) {
+    const sql = `SELECT love FROM accommodation WHERE acc_id = '${accId}';`;
+    return db
+    .execute(sql)
+    .then((rows) => rows[0][0].love);
+}
 
 /* 관심스테이 테이블에서 유저가 좋아요 한 숙소id 목록 조회 */
 export async function getUserLoveAccList({ userId }){
@@ -90,7 +94,6 @@ export async function getUserLoveAccList({ userId }){
 
 /* 관심스테이 테이블에 추가 */
 export async function addLove({ userId, accId }){
-    console.log(userId, accId);
     const sql = `insert into acc_love(user_id, acc_id) values('${userId}', '${accId}');`;
     return db
     .execute(sql)

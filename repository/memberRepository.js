@@ -42,3 +42,16 @@ export async function storeRefreshToken(params) { // user_id, refresh_token 을 
   .then(res => 'ok')
   .catch(err => console.log(err))
 }
+
+
+
+
+{/** 아이디 찾기, 비밀번호 찾기 */}
+
+export async function findIdByEmail(user_email) {
+  return db
+  .execute(`select user_id, user_name, left(join_date,10) join_date
+            from user where user_email=?`,[user_email])
+  .then(result => result[0])
+  .catch(err => console.log(err))
+}

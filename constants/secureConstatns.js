@@ -10,3 +10,8 @@ export const REFRESH_TOKEN = {
     expiresIn : '30 days'
   }
 }
+
+export const MAILER = {
+  USER : 'onstayhouse@gmail.com',
+  PW : 'omqw ezbs tnmm cvxg'
+}

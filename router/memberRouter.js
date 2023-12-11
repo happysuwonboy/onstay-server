@@ -1,5 +1,6 @@
 import express from 'express';
 import * as memberController from '../controller/memberController.js';
+import nodemailer from 'nodemailer';
 
 const router = express.Router()
 
@@ -21,7 +22,13 @@ router.get('/tokenCheck', memberController.tokenCheck)
 
 /** 유저 정보 조회 */
 router.get('/userinfo/:user_id', memberController.getUserInfo);
+  
 
+{/** 아이디 찾기, 비밀번호 찾기 */}
+
+router.post('/find/certification', memberController.sendCertificationCode)
+
+router.get('/find/id/:user_email', memberController.findIdByEmail)
 
 
 

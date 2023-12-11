@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { createAccessToken, createRefreshToken, removeAllToken } from '../util/token.js';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants/secureConstatns.js';
 import jwt from 'jsonwebtoken';
+import { sendFindIdCertification } from '../util/mailer.js';
 
 
 export async function getUserInfo(req,res) {
@@ -126,4 +127,31 @@ export async function tokenCheck(req, res) {
 }
 
 
+
+{/** 아이디 찾기, 비밀번호 찾기 */}
+
+export async function sendCertificationCode(req,res) {
+  const user_email = req.body.user_email;
+
+  const rows = await memberRepository.findIdByEmail(user_email)
+  
+  if (!rows.length) return res.status(404).send({message : '해당 이메일로 가입한 유저 정보가 없습니다.'})
+  
+  // 유저 정보 확인 될 경우, 인증 코드를 이메일로 전송함
+  let certificationCode = String(parseInt(Math.random()*100000));
+  certificationCode = "0".repeat(6-certificationCode.length) + certificationCode;
+  let result = await sendFindIdCertification(user_email, certificationCode);
+
+  if (result === 'error') {
+    res.status(404).send({message : '알 수 없는 에러가 발생하였습니다.'})
+  } else {
+    res.status(201).send({code:certificationCode}) 
+  }
+}
+
+export async function findIdByEmail(req, res) {
+  const user_email = req.params.user_email;
+  const rows = await memberRepository.findIdByEmail(user_email)
+  res.status(200).send(rows);
+}
 

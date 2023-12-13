@@ -8,6 +8,7 @@ import roomRouter from './router/roomRouter.js';
 import reservationRouter from './router/reservationRouter.js'
 import memberRouter from './router/memberRouter.js';
 import myPageRouter from './router/myPageRouter.js';
+import adminPageRouter from './router/adminPageRouter.js';
 import cookieParser from 'cookie-parser';
 import findStayRouter from './router/findStayRouter.js';
 import noticeRouter from './router/noticeRouter.js';
@@ -36,6 +37,7 @@ server.use('/room', roomRouter);
 server.use('/reservation', reservationRouter);
 server.use('/member', memberRouter)
 server.use('/mypage', myPageRouter);
+server.use('/adminpage', adminPageRouter);
 server.use('/findstay', findStayRouter);
 server.use('/getimg', imgRouter)
 server.use('/findstay/acc', accDetailRouter);

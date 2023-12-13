@@ -10,3 +10,16 @@ export const REFRESH_TOKEN = {
     expiresIn : '30 days'
   }
 }
+
+export const PW_RESET_TOKEN = {
+  secretKey : '83b0d9a5d7f06ee7aada13ee3a857f4754ba463d7c40b87baf2bda3656beff814a9d5c92d8c629dfeed93683673248384fc1a5d04752228fd1f624bf3cfa5250',
+  config : {
+    expiresIn : '10m'
+  }
+}
+
+export const MAILER = {
+  USER : 'onstayhouse@gmail.com',
+  PW : 'omqw ezbs tnmm cvxg'
+}
+

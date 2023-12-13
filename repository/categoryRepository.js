@@ -82,7 +82,7 @@ export async function getAccPrice() {
 
 
 /**
- * getAccImg : 숙소 조건에 따른 리스트 조회 (swiper)
+ * getAccImg : 숙소 이미지 조회 (swiper)
  * @param {string} id 
  * @returns row 데이터
  */

@@ -37,12 +37,11 @@ export async function checkRefreshToken(user_id,refreshToken) {
 
 export async function storeRefreshToken(params) { // user_id, refresh_token 을 담은 배열
   return db
-  .execute(`insert into user_token(user_id, refresh_token) values (?,?)
+  .execute(`insert into user_token(user_id, refresh_token, pwreset_token) values (?,?,null)
             on duplicate key update user_id=?, refresh_token=?`, [...params,...params])
   .then(res => 'ok')
   .catch(err => console.log(err))
 }
-
 
 
 
@@ -53,5 +52,27 @@ export async function findIdByEmail(user_email) {
   .execute(`select user_id, user_name, left(join_date,10) join_date
             from user where user_email=?`,[user_email])
   .then(result => result[0])
+  .catch(err => console.log(err))
+}
+
+export async function storePwResetToken(params) {
+  return db
+  .execute(`insert into user_token(user_id, refresh_token, pwreset_token) values (?,null,?)
+            on duplicate key update user_id=?, pwreset_token=?`, [...params,...params])
+  .then(res => 'ok')
+  .catch(err=> console.log(err))
+}
+
+export async function comparePwResetToken(token, user_id) {
+  return db
+  .execute(`select if(pwreset_token='${token}', true, false) as isSame from user_token where user_id=?`, [user_id])
+  .then(result => result[0][0]?.isSame)
+  .catch(err => console.log(err))
+}
+
+export async function removePwResetToken(token) {
+  return db
+  .execute(`update user_token set pwreset_token = null where pwreset_token=?`,[token])
+  .then(result => 'ok')
   .catch(err => console.log(err))
 }

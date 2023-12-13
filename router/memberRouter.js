@@ -26,9 +26,18 @@ router.get('/userinfo/:user_id', memberController.getUserInfo);
 
 {/** 아이디 찾기, 비밀번호 찾기 */}
 
+
+// 아이디 찾기 - 인증 번호 메일 전송 api 
 router.post('/find/certification', memberController.sendCertificationCode)
 
+// 아이디 찾기 - 결과 조회 api 
 router.get('/find/id/:user_email', memberController.findIdByEmail)
+
+// 비밀번호 찾기 - 비밀번호 재설정 링크 전송 api
+router.post('/find/pw/sendmail', memberController.sendResetPwMail)
+
+// 비밀번호 찾기 - 비밀번호 초기화 (재설정)
+router.post('/find/pw/reset', memberController.resetPw)
 
 
 

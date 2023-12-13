@@ -1,9 +1,10 @@
 import * as memberRepository from '../repository/memberRepository.js'
+import * as myPageRepository from '../repository/myPageRepository.js'
 import bcrypt from 'bcrypt';
 import { createAccessToken, createRefreshToken, removeAllToken } from '../util/token.js';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants/secureConstatns.js';
+import { ACCESS_TOKEN, REFRESH_TOKEN, PW_RESET_TOKEN } from '../constants/secureConstatns.js';
 import jwt from 'jsonwebtoken';
-import { sendFindIdCertification } from '../util/mailer.js';
+import { sendFindIdCertification, sendResetPwLink } from '../util/mailer.js';
 
 
 export async function getUserInfo(req,res) {
@@ -128,6 +129,8 @@ export async function tokenCheck(req, res) {
 
 
 
+
+
 {/** 아이디 찾기, 비밀번호 찾기 */}
 
 export async function sendCertificationCode(req,res) {
@@ -155,3 +158,50 @@ export async function findIdByEmail(req, res) {
   res.status(200).send(rows);
 }
 
+
+
+export async function sendResetPwMail(req,res) {
+  const user_id = req.body.user_id;
+  const userInfo = await memberRepository.getUserInfo(user_id)
+
+  if (!userInfo) return res.status(404).send({message : '존재하지 않는 유저 아이디입니다.'})
+
+  const pwResetToken = jwt.sign({user_id}, PW_RESET_TOKEN.secretKey, PW_RESET_TOKEN.config)
+  const emailSendResult =  await sendResetPwLink(userInfo.user_email, pwResetToken)
+  if (emailSendResult === 'error') {
+    return res.status(404).send({message : '알 수 없는 에러가 발생하였습니다.'})
+  }
+
+  const tokenStoreResult = await memberRepository.storePwResetToken([user_id, pwResetToken])
+  if (tokenStoreResult === 'ok') {
+    return res.status(201).send({message : 'ok'}) 
+  } else {
+    return res.status(404).send({message : 'unknown err'})
+  }
+}
+
+
+export async function resetPw(req,res) {
+  const pwResetToken = req.body.token;
+  try {
+    const result = jwt.verify(pwResetToken, PW_RESET_TOKEN.secretKey);
+    const user_id = result.user_id;
+    const isTokenSame = await memberRepository.comparePwResetToken(pwResetToken, user_id)
+    
+    if (isTokenSame) {
+      const newHashPw = bcrypt.hashSync(req.body.user_pw, 10);
+      await myPageRepository.editPassword(user_id, newHashPw)
+      await memberRepository.removePwResetToken(pwResetToken);
+      return res.status(201).send({message : '비밀번호 변경에 성공하였습니다.'})
+    } else {
+      await memberRepository.removePwResetToken(pwResetToken)
+      return res.status(403).send({message : '인증 시간이 만료되었습니다.'})
+    }
+
+  } catch {
+    await memberRepository.removePwResetToken(pwResetToken)
+    res.status(403).send({message : '인증 시간이 만료되었습니다.'})
+  }
+
+
+}

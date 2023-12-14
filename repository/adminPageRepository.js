@@ -29,3 +29,12 @@ export async function getAccList() {
     .execute(sql)
     .then((rows) => rows[0]);
 }
+
+
+export async function getAllUsers() {
+    return db
+    .execute(`select user_id, user_name, user_email, user_phone, user_img, 
+             left(join_date, 10) as join_date from user where user_role=0`)
+    .then(result => result[0])
+    .catch(err => console.log(err))
+}

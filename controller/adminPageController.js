@@ -9,3 +9,9 @@ export async function getAccList(req,res) {
         console.error('DB에서 숙소리스트 가져오는 중 에러 발생 => ' + error);
     }
 }
+
+
+export async function getAllUsers(req,res) {
+    const rows = await adminPageRepository.getAllUsers();
+    res.status(200).send(rows)
+}

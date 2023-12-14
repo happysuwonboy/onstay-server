@@ -5,5 +5,7 @@ const router = express.Router();
 
 router.get('/accs', adminPageController.getAccList);
 
+router.get('/users', adminPageController.getAllUsers)
+
 
 export default router;

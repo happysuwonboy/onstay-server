@@ -1,31 +1,39 @@
 import {db} from '../db/database.js';
 
 /* 숙소 리스트 조회 */
-export async function getAccList() {
-    const sql = `SELECT 
+export async function getAccList({startIndex, endIndex}) {
+    const sql = ` SELECT 
+                    acc_id, acc_name, register_date, area_code, room_name, room_price, room_img1, total_count
+                FROM (
+                    SELECT 
+                    row_number() over (order by acc.register_date desc) as no,
+                    acc.acc_id,
                     acc.acc_name, 
                     acc.register_date,
                     acc.area_code,
                     rm.room_name, 
                     FORMAT(rm.room_price,0) as room_price, 
-                    rm.room_img1
+                    rm.room_img1,
+                    COUNT(*) OVER () AS total_count
                 FROM 
                     accommodation acc, room rm
-                WHERE acc.acc_id = rm.acc_id;
+                WHERE acc.acc_id = rm.acc_id
+                )  as accs
+                where no between ${startIndex} and ${endIndex};
                 `;
-    
-                // `
-                // SELECT *
-                // FROM (
-                //     SELECT acc.acc_name, rm.room_name, rm.room_price,  acc_img.acc_img,
-                //         ROW_NUMBER() OVER (PARTITION BY rm.room_id) as row_num
-                //     FROM 
-                //         accommodation acc, room rm
-                //     WHERE room rm ON acc.acc_id = rm.acc_id
-                // ) AS accs
-                // WHERE row_num = 1;
-                // `;
     return db
     .execute(sql)
     .then((rows) => rows[0]);
+}
+/* 숙소 등록 */
+export async function insertAcc({accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2}) {
+    const sql = ` 
+                INSERT INTO accommodation
+                    (acc_name, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, acc_checkin, acc_checkout, homepage, register_date, only, area_code, acc_summary1, acc_summary2)
+                VALUES
+                    ('${accName}', '${tel}', '${zipcode}', '${address}', '${latitude}', '${longitude}', '${parking}', '${cook}', '${pet}', '${breakfast}', '${accCheckin}', '${accCheckout}', '${homepage}', '${registerDate}', '${only}', '${areaCode}', '${accSummary1}', '${accSummary2}');
+                `;
+    return db
+    .execute(sql)
+    .then((result) => 'ok');
 }

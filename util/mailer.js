@@ -41,7 +41,7 @@ export const sendFindIdCertification = async (user_email, sendCode) => {
 
 const resetPwHtml = (token) => `
     <div>
-     <a href='http://localhost:3000/find/pw/reset?token=${token}>
+     <a href='http://localhost:3000/find/pw/reset?token=${token}'>
         비밀번호 재설정 링크
      </a>
     </div>

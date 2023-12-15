@@ -34,6 +34,7 @@ export async function getAccRoom(roomId) {
 
 /**
  * getRoomDate : 해당하는 숙소의 오늘 날짜 이후 체크인, 체크아웃 예약 리스트 조회
+ * register_date 최신 작성일 순서
  * @param {*} roomId
  * @returns rows 데이터
  */
@@ -63,7 +64,7 @@ export async function getReview(roomid, start, end) {
                     rv.review_star,
                     rv.register_date,
                     ur.user_name,
-                    row_number() over (order by rv.register_date desc ) as rno
+                    row_number() over (order by rv.register_date desc) as rno
                 from review rv, user ur
                   where rv.user_id = ur.user_id
                   and rv.room_id = ?
@@ -149,4 +150,21 @@ export async function getIsReview(roomid, userid) {
   return db
     .execute(sql, [userid, roomid])
     .then(result => result[0]);
+}
+
+/**
+ * insertReview : 회원이 작성한 리뷰 등록 insert
+ * @param {*} reviewForm 
+ * @param {*} review_img
+ * @returns insert ok
+ */
+export async function insertReview(reviewForm, {review_img}) {
+  const { user_id, room_id, review_content, review_star, checkin, checkout } = reviewForm;
+  const sql = `insert into 
+                  review (room_id, user_id, review_content, review_img, review_star, register_date, checkin, checkout) 
+                  values(?, ?, ?, ?, ?, sysdate(), ?, ?)`;
+
+  return db
+    .execute(sql, [ room_id, user_id, review_content, review_img, review_star, checkin, checkout ])
+    .then(result => 'insert ok');
 }

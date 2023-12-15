@@ -87,3 +87,16 @@ export async function getIsRegister(req, res) {
     res.status(500).send({ message : '서버 오류' });
   }
 }
+
+/**
+ * insertReview : 회원이 작성한 리뷰 등록 insert
+ * @param {*} req 
+ * @param {*} res 
+ */
+export async function insertReview(req, res) {
+  const reviewForm = req.body;
+  const review_img = req.file?.filename || null;
+
+  const result = await roomRepository.insertReview(reviewForm, {review_img});
+  res.json(result);
+}

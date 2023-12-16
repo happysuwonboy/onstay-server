@@ -15,11 +15,13 @@ export async function getAccList(req,res) {
 }
 /* 숙소 등록 */
 export async function insertAcc(req,res) {
-    const { accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2 } = req.body;
+    const { accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2, roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa } = req.body;
     try {
         const result = await adminPageRepository.insertAcc({accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2});
-        res.json(result);
-
+        if(result === 'ok'){
+            const result = await adminPageRepository.insertRoom({roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa});
+            res.json(result);
+        }
     } catch (error) {
         console.error('숙소 insert 중 에러 발생 => ' + error);
     }

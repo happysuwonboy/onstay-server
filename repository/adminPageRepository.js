@@ -6,7 +6,7 @@ export async function getAccList({startIndex, endIndex}) {
                     acc_id, acc_name, register_date, area_code, room_name, room_price, room_img1, total_count
                 FROM (
                     SELECT 
-                    row_number() over (order by acc.register_date desc) as no,
+                    row_number() over (order by register_date desc) as no,
                     acc.acc_id,
                     acc.acc_name, 
                     acc.register_date,
@@ -32,6 +32,17 @@ export async function insertAcc({accName, tel, zipcode, address, latitude, longi
                     (acc_name, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, acc_checkin, acc_checkout, homepage, register_date, only, area_code, acc_summary1, acc_summary2)
                 VALUES
                     ('${accName}', '${tel}', '${zipcode}', '${address}', '${latitude}', '${longitude}', '${parking}', '${cook}', '${pet}', '${breakfast}', '${accCheckin}', '${accCheckout}', '${homepage}', '${registerDate}', '${only}', '${areaCode}', '${accSummary1}', '${accSummary2}');
+                `;
+    return db
+    .execute(sql)
+    .then((result) => 'ok');
+}
+export async function insertRoom({roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa}) {
+    const sql = ` 
+                INSERT INTO room
+                    (acc_id,room_name, room_price, feature_codes, amenities, min_capa, max_capa, room_img1)
+                VALUES
+                    ((SELECT MAX(acc_id) FROM accommodation),'${roomName}','${roomPrice}','${featureCodes}','${amenities}','${minCapa}','${maxCapa}');
                 `;
     return db
     .execute(sql)

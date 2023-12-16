@@ -30,6 +30,11 @@ router.get('/reservation/:category/:user_id', myPageController.getUserReservatio
 // 예약 취소 api
 router.delete('/reservation', myPageController.cancelReservation)
 
+/* 리뷰 관리 */
+router.get('/review/:user_id/:currentPage', myPageController.getAllReview);
+router.get('/review/:reviewid', myPageController.getReview);
+router.delete('/review/delete', myPageController.removeReview);
+
 
 {/* 회원 정보 수정 */}
 

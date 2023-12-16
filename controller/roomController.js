@@ -30,8 +30,8 @@ export async function getRoomDate(req, res) {
  */
 export async function getReview(req, res) {
   const {roomid, currentPage} = req.params;
-  const start = (currentPage - 1) * 5
-  const end = start + 4;
+  const end = 4 * currentPage;
+  const start = (end - 3);
 
   const rows = await roomRepository.getReview(roomid, start, end);
   res.json(rows);
@@ -67,13 +67,13 @@ export async function getIsRegister(req, res) {
     
     // 예약 리스트 조회 결과 조건 일치 x
     if(reservationResult.length <= 0) {
-      return res.status(200).send({message : '예약 x'});
+      return res.status(404).send({message : '일치하는 예약 정보가 없습니다'});
     } 
 
     // 리뷰 리스트 조회 결과 조건 일치 o
     const reviewResult = await roomRepository.getIsReview(roomid, userid);
     if(reviewResult.length <= 0) {
-      return res.status(200).send({message : '리뷰 x'});
+      return res.status(404).send({message : '일치하는 리뷰 정보가 없습니다'});
     } 
 
     // 리뷰 중에서 체크아웃 날짜가 정확하게 일치하지 않는 경우만 포함

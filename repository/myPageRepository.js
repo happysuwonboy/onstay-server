@@ -21,6 +21,105 @@ export async function cancelReservation(reservation_id) {
   .catch(err => console.log(err))
 }
 
+/**
+ * getAllReview : 해당하는 회원의 작성한 리뷰 리스트 조회 ( 페이지네이션 )
+ * @param {*} user_id
+ * @param {*} start
+ * @param {*} end
+ * @returns rows 데이터
+ */
+export async function getAllReview(user_id, start, end) {
+  const sql = `with rno_review as (
+                select 
+                  row_number() over(order by rv.register_date desc) as rno,
+                  rv.review_id,
+                  rv.review_content,
+                  rv.review_img,
+                  rv.review_star,
+                  rv.register_date,
+                  rv.checkin,
+                  rv.checkout,
+                  rv.room_id,
+                  rv.user_id,
+                  rm.room_name,
+                  ac.acc_name,
+                  us.user_name
+                from review rv, room rm, accommodation ac, user us
+                where rv.room_id = rm.room_id
+                and rm.acc_id = ac.acc_id
+                and rv.user_id = us.user_id
+                and rv.user_id = ?
+              )
+              
+              select 
+                rno,
+                review_id,
+                review_content,
+                review_img,
+                review_star,
+                register_date,
+                checkin,
+                checkout,
+                room_id,
+                user_id,
+                room_name,
+                acc_name,
+                user_name,
+                (select count(*) from rno_review) as total_cnt
+              from rno_review
+              where rno between ? and ?`;
+
+  return db
+  .execute(sql, [user_id, start, end])
+  .then(result => result[0]);
+}
+
+/**
+ * getReview : 해당하는 리뷰 리스트 조회
+ * @param {*} reviewid 
+ * @returns row 데이터
+ */
+export async function getReview(review_id) {
+  const sql = `select 
+                  review_id, room_id, user_id, review_content, review_img, review_star, register_date, checkin, checkout
+                from review
+                where review_id = ?`;
+
+  return db
+  .execute(sql, [review_id])
+  .then(result => result[0][0]);
+}
+
+/**
+ * isUserReview : 현재 존재하는 회원이면서 해당하는 회원이 작성한 리뷰의 count
+ * @param {*} user_id 
+ * @param {*} review_id 
+ * @returns cnt 데이터
+ */
+export async function isUserReview(user_id, review_id) {
+  const sql = `select count(*) as cnt
+                from user us, review rv
+                  where us.user_id = rv.user_id
+                  and us.user_id = ?
+                  and rv.review_id = ?`;
+
+  return db
+  .execute(sql, [user_id, review_id])
+  .then(result => result[0][0].cnt);
+}
+
+/**
+ * removeReview : 회원이 등록한 리뷰 삭제
+ * @param {*} user_id 
+ * @param {*} review_id 
+ * @returns 
+ */
+export async function removeReview(user_id, review_id) {
+  return db
+  .execute(`delete from review where review_id = ? and user_id = ?`, [review_id, user_id])
+  .then(result => 'delete ok')
+}
+
 export async function getUpcomingReservation(user_id) {
   return db
   .execute(`select count(*) as cnt from reservation where user_id=? and curdate() <= left(checkin,10)`,[user_id])

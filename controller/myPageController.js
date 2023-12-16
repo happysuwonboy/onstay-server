@@ -43,6 +43,58 @@ export async function cancelReservation(req,res) {
   }
 }
 
+/**
+ * getAllReview : 해당하는 회원의 작성한 리뷰 리스트 조회
+ * @param {*} req 
+ * @param {*} res 
+ */
+export async function getAllReview(req, res) {
+  const {user_id, currentPage} = req.params;
+  const end = 2 * currentPage;
+  const start = (end - 1);
+  const rows = await myPageRepository.getAllReview(user_id, start, end);
+  res.json(rows);
+}
+
+/**
+ * getReview : 해당하는 리뷰 리스트 조회
+ * @param {*} req 
+ * @param {*} res 
+ */
+export async function getReview(req, res) {
+  const review_id = req.params.reviewid;
+  const row = await myPageRepository.getReview(review_id);
+  res.json(row);
+}
+
+/**
+ * removeReview : 회원, 리뷰 확인 후 리뷰 삭제
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export async function removeReview(req, res) {
+  const {user_id, review_id} = req.body;
+  try {
+    // 존재하는 회원 + 작성한 리뷰가 있는지 확인
+    const isUserReview = await myPageRepository.isUserReview(user_id, review_id);
+
+    // 조회 결과 일치하는 회원이 아니거나 작성한 리뷰 x
+    if(isUserReview === 0) {
+      return res.status(404).send({message : '리뷰, 회원이 존재하지 않습니다'})
+    }
+
+    const result = await myPageRepository.removeReview(user_id, review_id);
+    if(result === 'delete ok') {
+      res.json(result);
+    } else {
+      return res.status(200).send({message : '삭제에 실패하였습니다'})
+    }
+
+  } catch(error) {
+    res.status(500).send({message : '서버 오류', error: error.message})
+  }
+}
 
 export async function editPassword(req,res) {
   const {user_id, current_pw, new_pw} = req.body;

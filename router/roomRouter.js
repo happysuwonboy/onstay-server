@@ -24,8 +24,9 @@ const uploadMiddleWare = reviewImgUpload.single('review_img');
 
 router.get('/:roomid', roomController.getAccRoom);
 router.get('/date/:roomid', roomController.getRoomDate);
-router.post('/review', uploadMiddleWare, roomController.insertReview);
-router.get('/review/:roomid/:currentPage', roomController.getReview);
-router.get('/:roomid/:userid', roomController.getIsRegister);
+router.post('/review', uploadMiddleWare, roomController.insertReview); // 리뷰 등록
+router.put('/review/mypage/update', uploadMiddleWare, roomController.updateReview); // 리뷰 수정
+router.get('/review/:roomid/:currentPage', roomController.getReview); // 리뷰 리스트 목록 조회 ( 페이지네이션 )
+router.get('/:roomid/:userid', roomController.getIsRegister); // 리뷰 등록 가능 여부 ( 예약정보까지 함께 확인 )
 
 export default router;

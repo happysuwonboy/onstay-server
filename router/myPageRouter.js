@@ -31,9 +31,9 @@ router.get('/reservation/:category/:user_id', myPageController.getUserReservatio
 router.delete('/reservation', myPageController.cancelReservation)
 
 /* 리뷰 관리 */
-router.get('/review/:user_id/:currentPage', myPageController.getAllReview);
-router.get('/review/:reviewid', myPageController.getReview);
-router.delete('/review/delete', myPageController.removeReview);
+router.get('/review/:user_id/:currentPage', myPageController.getAllReview); // 리뷰관리 리뷰 목록 ( 페이지네이션 )
+router.get('/review/:reviewid', myPageController.getReview); // 리뷰 수정하기 클릭 시 해당하는 리뷰의 정보
+router.delete('/review/delete', myPageController.removeReview); // 리뷰 삭제
 
 
 {/* 회원 정보 수정 */}

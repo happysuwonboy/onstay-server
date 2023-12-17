@@ -77,10 +77,10 @@ export async function removeReview(req, res) {
   const {user_id, review_id} = req.body;
   try {
     // 존재하는 회원 + 작성한 리뷰가 있는지 확인
-    const isUserReview = await myPageRepository.isUserReview(user_id, review_id);
+    const isUserReviewResult = await myPageRepository.isUserReview(user_id, review_id);
 
     // 조회 결과 일치하는 회원이 아니거나 작성한 리뷰 x
-    if(isUserReview === 0) {
+    if(isUserReviewResult === 0) {
       return res.status(404).send({message : '리뷰, 회원이 존재하지 않습니다'})
     }
 

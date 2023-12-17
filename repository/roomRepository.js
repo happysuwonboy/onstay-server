@@ -88,24 +88,6 @@ export async function getReview(roomid, start, end) {
     .then(result => result[0]);
 }
 
-
-/**
- * getReservation : 해당 회원, 해당 객실의 체크아웃 이후 예약 리스트 조회 ( 리뷰 등록 가능 기준 )
- * @param {*} roomid 
- * @param {*} userid 
- * @returns 
- */
-export async function getReservation(roomid, userid) {
-  const sql = `select count(*) as cnt from reservation 
-                where user_id = ?
-                and room_id = ?
-                and checkout < curdate()`;
-
-  return db
-    .execute(sql, [userid, roomid])
-    .then(result => result[0][0]);
-}
-
 /**
  * getIsReview
  * 오늘 날짜 기준 예약 리스트 중 해당 회원, 해당 객실, 리뷰 등록 가능 한달 조건에 충족하는 리스트 반환
@@ -119,8 +101,8 @@ export async function getIsReservation(roomid, userid) {
                   reservation_id,
                   user_id,
                   room_id,
-                  checkin, 
-                  checkout, 
+                  date_format(checkin, '%Y-%m-%d') as checkin, 
+                  date_format(checkout, '%Y-%m-%d') as checkout, 
                   datediff(date_add(checkout, interval + 1 month), curdate()) as remaining_days
                 from reservation
                 where user_id = ?
@@ -141,7 +123,9 @@ export async function getIsReservation(roomid, userid) {
  * @returns rows 데이터
  */
 export async function getIsReview(roomid, userid) {
-  const sql = `select checkout from review
+  const sql = `select 
+                  date_format(checkout, '%Y-%m-%d') as checkout 
+                from review
                 where user_id = ?
                 and room_id = ?
                 and curdate() between checkout and date_add(checkout, interval + 1 month)
@@ -167,4 +151,18 @@ export async function insertReview(reviewForm, {review_img}) {
   return db
     .execute(sql, [ room_id, user_id, review_content, review_img, review_star, checkin, checkout ])
     .then(result => 'insert ok');
+}
+
+/**
+ * updateReview : 회원이 작성한 리뷰 수정 update
+ * @param {*} formData 
+ * @returns update ok
+ */
+export async function updateReview(formData) {
+  const { review_id, room_id, user_id, review_img, review_content, review_star, checkin, checkout } = formData;
+  const sql = `update review set room_id=?, user_id=?, review_content=?, review_img=?, review_star=?, checkin=?, checkout=? where review_id=?`;
+
+  return db
+    .execute(sql, [ room_id, user_id, review_content, review_img, review_star, checkin, checkout, review_id ])
+    .then(result => 'update ok');
 }

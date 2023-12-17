@@ -37,8 +37,8 @@ export async function getAllReview(user_id, start, end) {
                   rv.review_img,
                   rv.review_star,
                   rv.register_date,
-                  rv.checkin,
-                  rv.checkout,
+                  date_format(rv.checkin, '%Y-%m-%d') as checkin,
+                  date_format(rv.checkout, '%Y-%m-%d') as checkout,
                   rv.room_id,
                   rv.user_id,
                   rm.room_name,
@@ -81,7 +81,15 @@ export async function getAllReview(user_id, start, end) {
  */
 export async function getReview(review_id) {
   const sql = `select 
-                  review_id, room_id, user_id, review_content, review_img, review_star, register_date, checkin, checkout
+                  review_id, 
+                  room_id,
+                  user_id, 
+                  review_content, 
+                  review_img, 
+                  review_star, 
+                  register_date, 
+                  date_format(checkin, '%Y-%m-%d') as checkin,
+                  date_format(checkout, '%Y-%m-%d') as checkout
                 from review
                 where review_id = ?`;
 

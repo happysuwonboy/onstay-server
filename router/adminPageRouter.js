@@ -5,7 +5,14 @@ const router = express.Router();
 
 router.get('/accs', adminPageController.getAccList);
 
-router.get('/users', adminPageController.getAllUsers)
+
+{/** 회원 관리  */}
+
+router.get('/users', adminPageController.getAllUsers);
+
+{/**1:1 문의 관리 */}
+
+router.get('/questions/:answer_state', adminPageController.getAllQuestions);
 
 
 export default router;

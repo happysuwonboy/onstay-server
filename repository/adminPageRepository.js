@@ -38,3 +38,16 @@ export async function getAllUsers() {
     .then(result => result[0])
     .catch(err => console.log(err))
 }
+
+export async function getAllQuestions(answerState) {
+    return db
+    .execute(`select row_number() over(order by ${answerState ? 'a' : 'q'}.update_date desc) as rno, 
+              q.question_id, question_category, question_title, 
+              question_content, q.user_id, if(a.question_id is not null, 1, 0) as answer_state,
+              left(q.update_date,10) as question_update_date, left(a.update_date,10) as answer_update_date
+              from question q left outer join answer a on q.question_id = a.question_id
+              where if(a.question_id is not null, 1, 0) = ? 
+              order by ${answerState ? 'a' : 'q'}.update_date desc`,[answerState])
+    .then(result => result[0])
+    .catch(err => console.log(err))
+}

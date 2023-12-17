@@ -42,7 +42,7 @@ export async function getAllUsers() {
 export async function getAllQuestions(answerState) {
     return db
     .execute(`select row_number() over(order by ${answerState ? 'a' : 'q'}.update_date desc) as rno, 
-              q.question_id, question_category, question_title, 
+              q.question_id, question_category, question_title, a.answer_id, a.answer_content,
               question_content, q.user_id, if(a.question_id is not null, 1, 0) as answer_state,
               left(q.update_date,10) as question_update_date, left(a.update_date,10) as answer_update_date
               from question q left outer join answer a on q.question_id = a.question_id

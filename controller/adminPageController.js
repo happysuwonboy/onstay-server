@@ -13,6 +13,17 @@ export async function getAccList(req,res) {
         console.error('DB에서 숙소리스트 가져오는 중 에러 발생 => ' + error);
     }
 }
+
+export async function detailAcc(req, res) {
+    const { accId, roomName } = req.query;
+    console.log(accId, roomName);
+    try {
+        const result = await adminPageRepository.detailAcc({accId, roomName});
+        res.json(result);
+    } catch (error) {
+        console.error('DB에서 상세 정보 가져오는 중 에러 발생 => ' + error);
+    }
+}
 /* 숙소 등록 */
 export async function insertAcc(req,res) {
     const { accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2, roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa } = req.body;

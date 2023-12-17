@@ -24,7 +24,8 @@ const roomImgUpload = multer({
 
 const uploadMiddleware = roomImgUpload.single('roomImg1'); //미들웨어 생성
 
-router.get('/accs/:page', adminPageController.getAccList);
+router.get('/accs/detail/', adminPageController.detailAcc);
 router.post('/accs/insert/', uploadMiddleware, adminPageController.insertAcc);
+router.get('/accs/:page', adminPageController.getAccList);
 
 export default router;

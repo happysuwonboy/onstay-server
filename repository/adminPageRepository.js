@@ -25,6 +25,23 @@ export async function getAccList({startIndex, endIndex}) {
     .execute(sql)
     .then((rows) => rows[0]);
 }
+
+/* 상세 정보 조회 */
+export async function detailAcc({accId,roomName}) {
+    const sql = `SELECT 
+                *
+                FROM
+                    accommodation ac, room rm
+                WHERE
+                    ac.acc_id = rm.acc_id
+                AND ac.acc_id = '${accId}'
+                AND rm.room_name = '${roomName}';
+                `;
+    return db
+    .execute(sql)
+    .then((rows) => rows[0]);
+}
+
 /* 숙소 등록 */
 export async function insertAcc({accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2}) {
     const sql = ` 

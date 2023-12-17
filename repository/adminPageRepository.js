@@ -37,12 +37,12 @@ export async function insertAcc({accName, tel, zipcode, address, latitude, longi
     .execute(sql)
     .then((result) => 'ok');
 }
-export async function insertRoom({roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa}) {
+export async function insertRoom({roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa, imageFile}) {
     const sql = ` 
                 INSERT INTO room
                     (acc_id,room_name, room_price, feature_codes, amenities, min_capa, max_capa, room_img1)
                 VALUES
-                    ((SELECT MAX(acc_id) FROM accommodation),'${roomName}','${roomPrice}','${featureCodes}','${amenities}','${minCapa}','${maxCapa}');
+                    ((SELECT acc_id FROM accommodation ORDER BY acc_id DESC LIMIT 1),'${roomName}','${roomPrice}','${featureCodes}','${amenities}','${minCapa}','${maxCapa}','${imageFile}');
                 `;
     return db
     .execute(sql)

@@ -16,10 +16,12 @@ export async function getAccList(req,res) {
 /* 숙소 등록 */
 export async function insertAcc(req,res) {
     const { accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2, roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa } = req.body;
+    const imageFile = req.file?.filename || null;
+    console.log(req.file);
     try {
         const result = await adminPageRepository.insertAcc({accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2});
         if(result === 'ok'){
-            const result = await adminPageRepository.insertRoom({roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa});
+            const result = await adminPageRepository.insertRoom({roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa, imageFile});
             res.json(result);
         }
     } catch (error) {

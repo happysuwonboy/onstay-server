@@ -79,7 +79,8 @@ export async function getReview(roomid, start, end) {
                 review_star,
                 register_date,
                 user_name,
-                (select count(*) from all_review ) as total_cnt
+                (select count(*) from all_review) as total_cnt,
+                round((select avg(review_star) from all_review), 1) as avg_star
               from all_review
               where rno between ? and ?`;
               

@@ -3,15 +3,24 @@ import { db } from '../db/database.js';
 export async function getUserReservations(user_id, filter='') {
   return db
   .execute(`select reservation_id, ac.acc_id, room_name, left(pay_date,10) pay_date,
-            left(checkin,10) checkin_date, left(checkout,10) checkout_date,
+            rs.room_id, left(checkin,10) checkin_date, left(checkout,10) checkout_date,
             acc_checkin checkin_time, acc_checkout checkout_time, acc_name, 
             if(datediff(checkin,now()) <= 2, false, true) as isCancelable,
+            if(datediff(checkout,now()) < -30, false, true) as isReviewable,
             abs(datediff(checkin, checkout)*room_price) as pay_price
             from reservation rs inner join room rm inner join accommodation ac
             on rs.room_id = rm.room_id and rm.acc_id = ac.acc_id
             where ${filter} user_id=?
             order by checkin_date desc`,[user_id])
   .then(result=>result[0])
+}
+
+export async function checkReviewExist(user_id, room_id, checkout_date) {
+  return db
+  .execute(`select if(count(*)=1,true,false) as isReviewExist from review 
+            where user_id=? and room_id=? and checkout=?`,[user_id, room_id, checkout_date])
+  .then(result => result[0][0].isReviewExist)
+  .catch(err => console.log(err))
 }
 
 export async function cancelReservation(reservation_id) {
@@ -112,7 +121,7 @@ export async function getLoveStay(user_id) {
             from accommodation ac inner join room rm 
             on ac.acc_id=rm.acc_id group by ac.acc_id) ac
             on lv.acc_id = ac.acc_id
-            where lv.user_id=?`,[user_id])
+            where lv.user_id=? order by love_id desc`,[user_id])
   .then(result => result[0])
   .catch(err => console.log(err))
 }

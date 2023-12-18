@@ -51,3 +51,25 @@ export async function getAllQuestions(answerState) {
     .then(result => result[0])
     .catch(err => console.log(err))
 }
+
+export async function postAnswer(question_id, answer_content) {
+    return db
+    .execute(`insert into answer(question_id, answer_content, update_date) 
+            values(?,?,sysdate())`, [question_id, answer_content])
+    .then(result => 'ok')
+    .catch(err => console.log(err))
+}
+
+export async function updateAnswer(answer_id, answer_content) {
+    return db
+    .execute(`update answer set answer_content=? where answer_id=?`,[answer_content,answer_id])
+    .then(result => 'ok')
+    .catch(err => console.log(err))
+}
+
+export async function removeAnswer(question_id) {
+    return db
+    .execute(`delete from answer where question_id=?`,[question_id])
+    .then(result => 'ok')
+    .catch(err => console.log(err))
+}

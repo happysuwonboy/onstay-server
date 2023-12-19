@@ -23,8 +23,11 @@ export async function getUserReservations(req,res) {
 
   const body = [];
   for (const row of rows) {
+    let {room_id, checkout_date, isReviewable} = row;
+    const isReviewExist = await myPageRepository.checkReviewExist(user_id, room_id, checkout_date);
+    isReviewable = isReviewable && !isReviewExist;
     const images = await accRepository.getAccImages(row.acc_id);
-    body.push({...row, images})
+    body.push({...row, isReviewable, images})
   }
 
   res.status(200).send(body)

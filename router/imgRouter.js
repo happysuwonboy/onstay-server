@@ -14,4 +14,9 @@ router.get('/noticeimg/:filename', (req,res) => {
     res.sendFile(filePath)
 })
 
+router.get('/reviewimg/:filename', (req, res) => {
+    const filePath = path.join(__dirname, 'uploads', 'reviewfile', req.params.filename);
+    res.sendFile(filePath);
+});
+
 export default router

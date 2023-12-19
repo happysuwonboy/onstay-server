@@ -9,7 +9,7 @@ export async function getAccList({startIndex, endIndex}) {
                     row_number() over (order by register_date desc) as no,
                     acc.acc_id,
                     acc.acc_name, 
-                    acc.register_date,
+                    LEFT(acc.register_date,10) as register_date,
                     acc.area_code,
                     rm.room_name, 
                     FORMAT(rm.room_price,0) as room_price, 
@@ -31,9 +31,10 @@ export async function detailAcc({accId,roomName}) {
     const sql = `SELECT 
                 *
                 FROM
-                    accommodation ac, room rm
+                    accommodation ac, room rm, acc_img acc_img
                 WHERE
                     ac.acc_id = rm.acc_id
+                AND ac.acc_id = acc_img.acc_id
                 AND ac.acc_id = '${accId}'
                 AND rm.room_name = '${roomName}';
                 `;
@@ -42,7 +43,7 @@ export async function detailAcc({accId,roomName}) {
     .then((rows) => rows[0]);
 }
 
-/* 숙소 등록 */
+/* 숙소, 객실 등록 */
 export async function insertAcc({accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2}) {
     const sql = ` 
                 INSERT INTO accommodation
@@ -54,13 +55,43 @@ export async function insertAcc({accName, tel, zipcode, address, latitude, longi
     .execute(sql)
     .then((result) => 'ok');
 }
-export async function insertRoom({roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa, imageFile}) {
+export async function insertRoom({roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa, roomImg1, roomImg2, roomImg3}) {
     const sql = ` 
                 INSERT INTO room
-                    (acc_id,room_name, room_price, feature_codes, amenities, min_capa, max_capa, room_img1)
+                    (acc_id,room_name, room_price, feature_codes, amenities, min_capa, max_capa, room_img1, room_img2, room_img3)
                 VALUES
-                    ((SELECT acc_id FROM accommodation ORDER BY acc_id DESC LIMIT 1),'${roomName}','${roomPrice}','${featureCodes}','${amenities}','${minCapa}','${maxCapa}','${imageFile}');
+                    ((SELECT acc_id FROM accommodation ORDER BY acc_id DESC LIMIT 1),'${roomName}','${roomPrice}','${featureCodes}','${amenities}','${minCapa}','${maxCapa}','${roomImg1}','${roomImg2}','${roomImg3}');
                 `;
+    return db
+    .execute(sql)
+    .then((result) => 'ok');
+}
+export async function insertAccImgs({accImg1}) {
+    const sql = ` 
+                INSERT INTO acc_img
+                    (acc_id, acc_img, acc_img_type)
+                VALUES
+                    ((SELECT acc_id FROM accommodation ORDER BY acc_id DESC LIMIT 1), '${accImg1}', 1);
+                `;
+    return db
+    .execute(sql)
+    .then((result) => 'ok');
+}
+/* 숙소, 객실 삭제 */
+export async function countRoomPerAcc({accId}){
+    const sql = `SELECT COUNT(*) as count FROM room WHERE acc_id = '${accId}'`;
+    return db
+    .execute(sql)
+    .then((rows) => rows[0][0].count);
+}
+export async function deleteAcc({accId}) {
+    const sql = `DELETE FROM accommodation WHERE acc_id = '${accId}'`;
+    return db
+    .execute(sql)
+    .then((result) => 'ok');
+}
+export async function deleteRoom({roomName}) {
+    const sql = `DELETE FROM room WHERE room_name = '${roomName}'`;
     return db
     .execute(sql)
     .then((result) => 'ok');

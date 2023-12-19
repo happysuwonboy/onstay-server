@@ -18,14 +18,15 @@ export async function getSummary(req, res){
   res.json(result);
 }
 
+export async function getAccPoint(req, res){
+  const accid = req.params.accid;
+  const result = await accDetailRepository.getAccPoint(accid);
+  res.json(result);
+}
+
 export async function getMap(req, res){
   const accid = req.params.accid;
   const result = await accDetailRepository.getMap(accid);
   res.json(result);
 }
 
-export async function getReverve(req, res){
-  const accid = req.params.accid;
-  const result = await accDetailRepository.getReverve(accid);
-  res.json(result);
-}

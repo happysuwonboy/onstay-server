@@ -1,12 +1,11 @@
 import jwt from 'jsonwebtoken';
-import { REFRESH_TOKEN, ACCESS_TOKEN } from '../constants/secureConstatns.js';
 
 export const createAccessToken = (userInfo) => {
-  return jwt.sign(userInfo, ACCESS_TOKEN.secretKey, ACCESS_TOKEN.config)
+  return jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRETKEY, {expiresIn : '1h'})
 }
 
 export const createRefreshToken = (userInfo) => {
-  return jwt.sign(userInfo, REFRESH_TOKEN.secretKey, REFRESH_TOKEN.config) 
+  return jwt.sign(userInfo, process.env.REFRESH_TOKEN_SECRETKEY, {expiresIn : '30 days'}) 
 } 
 
 export const removeAllToken = (res) => {

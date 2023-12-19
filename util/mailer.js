@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer';
-import { MAILER } from '../constants/secureConstatns.js';
 
 
 const certificationCodeHtml = (code) => `
@@ -20,12 +19,12 @@ export const sendFindIdCertification = async (user_email, sendCode) => {
         host : 'smtp.gmail.com',
         port : 587,
         auth : {
-              user : MAILER.USER ,
-              pass : MAILER.PW
+              user : process.env.MAILER_ID,
+              pass : process.env.MAILER_PW
             },
     })
     const mailOptions = {
-        from : MAILER.USER,
+        from : process.env.MAILER_ID,
         to : user_email,
         subject : '[온스테이 하우스]아이디 찾기 인증 코드',
         html : certificationCodeHtml(sendCode)
@@ -41,8 +40,9 @@ export const sendFindIdCertification = async (user_email, sendCode) => {
 
 const resetPwHtml = (token) => `
     <div>
+    <h3>안녕하세요, onstayhouse입니다! 아래 링크를 클릭하여 비밀번호를 재설정해주세요.</h3>
      <a href='http://localhost:3000/find/pw/reset?token=${token}'>
-        비밀번호 재설정 링크
+        비밀번호 재설정
      </a>
     </div>
 `
@@ -55,12 +55,12 @@ export const sendResetPwLink = async (user_email, token) => {
         host : 'smtp.gmail.com',
         port : 587,
         auth : {
-              user : MAILER.USER ,
-              pass : MAILER.PW
+              user : process.env.MAILER_ID,
+              pass : process.env.MAILER_PW
             },
     })
     const mailOptions = {
-        from : MAILER.USER,
+        from : process.env.MAILER_ID,
         to : user_email,
         subject : '[온스테이 하우스]비밀번호 재설정 링크',
         html : resetPwHtml(token)
@@ -87,12 +87,12 @@ export const sendPostAnswerNoti = async (user_id, user_email, question_title) =>
         host : 'smtp.gmail.com',
         port : 587,
         auth : {
-              user : MAILER.USER ,
-              pass : MAILER.PW
-            },
+            user : process.env.MAILER_ID,
+            pass : process.env.MAILER_PW
+          },
     })
     const mailOptions = {
-        from : MAILER.USER,
+        from : process.env.MAILER_ID,
         to : user_email,
         subject : '[온스테이 하우스]1:1 문의 답변이 등록되었습니다.',
         html : postAnswerNotiHtml(user_id, question_title)

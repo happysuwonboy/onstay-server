@@ -14,7 +14,7 @@ import findStayRouter from './router/findStayRouter.js';
 import noticeRouter from './router/noticeRouter.js';
 import imgRouter from './router/imgRouter.js'
 import accDetailRouter from './router/accDetailRouter.js';
-
+import accGalleryRouter from './router/accGalleryRouter.js';
 
 const server = express();
 const PORT = 8000;
@@ -41,6 +41,6 @@ server.use('/adminpage', adminPageRouter);
 server.use('/findstay', findStayRouter);
 server.use('/getimg', imgRouter)
 server.use('/findstay/acc', accDetailRouter);
-
+server.use('/findstay/acc/gallery', accGalleryRouter);
 
 server.listen(PORT, ()=>{console.log(`listening on ${PORT}`)});

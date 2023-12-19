@@ -6,9 +6,9 @@ import * as getAccommodationName from '../controller/accDetailController.js';
 const router = express.Router();
 
 router.get('/:accid', getAccommodationName.getAccInfo);
-router.get('/:accid/room', getAccommodationName.getRoomInfo)
-router.get('/:accid/summary', getAccommodationName.getSummary)
-router.get('/:accid/map', getAccommodationName.getMap)
-router.get('/:accid/reserve', getAccommodationName.getReverve)
+router.get('/:accid/room', getAccommodationName.getRoomInfo);
+router.get('/:accid/summary', getAccommodationName.getSummary);
+router.get('/:accid/map', getAccommodationName.getMap);
+router.get('/:accid/point', getAccommodationName.getAccPoint);
 
 export default router;

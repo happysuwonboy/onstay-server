@@ -24,30 +24,35 @@ export async function getAccList(req, res) {
 }
 
 export async function getTodayAcc(req, res) {
-  const {page} = req.params;
-  const result = await newStayRepository.getTodayAcc(page);
+  // const {page} = req.params;
+  const result = await newStayRepository.getTodayAcc();
   res.json(result);
 };
 
 export async function addCoupon(req, res) {
   const {user_id, coupon_name, discount_price, acc_name} = req.body;
-  const getCoupon = await newStayRepository.getCoupon(user_id);
-  let validCouponFound = false;
-
-  for (const coupon of getCoupon) {
-    if(coupon.acc_name !== acc_name) {
-      console.log(coupon. coupon_name, acc_name);
-      await newStayRepository.addCoupon(user_id, coupon_name, discount_price);
-      validCouponFound = true;
-    } else {
-      validCouponFound = false;
-      break;
-    }
-  }
-
-  if (validCouponFound) {
-    res.json('ok');
+  const getCoupon = await newStayRepository.getCoupon(user_id, acc_name);
+  // let validCouponFound = false;
+  console.log(getCoupon.count);
+  if (getCoupon.count === 0) {
+    const result = await newStayRepository.addCoupon(user_id, coupon_name, discount_price);
+    res.json(result);
   } else {
-    res.json('not ok');
+    res.json('not ok')
   }
+
+    // if(coupon.acc_name !== acc_name) {
+    //   console.log(coupon. coupon_name, acc_name);
+    //   await newStayRepository.addCoupon(user_id, coupon_name, discount_price);
+    //   validCouponFound = true;
+    // } else {
+    //   validCouponFound = false;
+    //   break;
+    // }
+
+  // if (validCouponFound) {
+  //   res.json('ok');
+  // } else {
+  //   res.json('not ok');
+  // }
 };

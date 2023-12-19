@@ -58,18 +58,7 @@ export async function getAccList({ startIndex, endIndex }) {
 
 export async function getTodayAcc(page) {
   const sql = `
-  select no,
-    acc_id, 
-    acc_name, 
-    register_date, 
-    area_code,
-    acc_summary1, 
-    min_capa, 
-    max_capa, 
-    acc_imgs,
-    room_price
-  from (select
-    row_number() over (order by register_date) as no,
+    select
     acc.acc_id, 
     acc_name, 
     register_date, 
@@ -90,11 +79,10 @@ export async function getTodayAcc(page) {
     acc_name, 
     register_date, 
     area_code, 
-    acc_summary1) as todaylist
-    where no = ?`
+    acc_summary1`
 
   return db
-    .execute(sql, [page])
+    .execute(sql)
     .then(rows => {
       return rows[0].map(row => ({
         acc_id: row.acc_id,
@@ -121,14 +109,14 @@ export async function addCoupon(user_id, coupon_name, discount_price) {
   .then(result => 'ok');
 };
 
-export async function getCoupon(user_id) {
+export async function getCoupon(user_id, acc_name) {
   const sql = `
   select 
-  substring_index(substring_index(coupon_name, '[', -1), ']', 1) as coupon_name
-  from coupon
-  where user_id = ?`
+  count(coupon_name) as count
+  from coupon where user_id = ? 
+  and coupon_name like ?`
 
   return db
-  .execute(sql, [user_id])
-  .then(rows => rows[0]);
+  .execute(sql, [user_id, `[${acc_name}]%`])
+  .then(rows => rows[0][0]);
 };

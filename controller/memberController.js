@@ -2,7 +2,6 @@ import * as memberRepository from '../repository/memberRepository.js'
 import * as myPageRepository from '../repository/myPageRepository.js'
 import bcrypt from 'bcrypt';
 import { createAccessToken, createRefreshToken, removeAllToken } from '../util/token.js';
-import { ACCESS_TOKEN, REFRESH_TOKEN, PW_RESET_TOKEN } from '../constants/secureConstatns.js';
 import jwt from 'jsonwebtoken';
 import { sendFindIdCertification, sendResetPwLink } from '../util/mailer.js';
 
@@ -85,7 +84,7 @@ export async function tokenCheck(req, res) {
   // 1. 액세스 토큰 만료 여부를 체크
   if (accessToken) {
     try {
-      let user_id = jwt.verify(accessToken, ACCESS_TOKEN.secretKey).user_id;
+      let user_id = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRETKEY).user_id;
       const userInfo = await memberRepository.getUserInfo(user_id);
       let {user_name, user_role} = userInfo;
       return res.status(200).send({userInfo : {user_id, user_name, isAdmin : user_role===1 ? true : false}}); // 액세스 토큰 만료되지 않은 경우 ok 보내주고 종료
@@ -106,7 +105,7 @@ export async function tokenCheck(req, res) {
   let user_id;
   let isSame;
   try {
-     user_id = jwt.verify(refreshToken,REFRESH_TOKEN.secretKey).user_id;
+     user_id = jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRETKEY).user_id;
   } catch {
     removeAllToken(res)
     return res.status(401).send('invalid token') 
@@ -166,7 +165,7 @@ export async function sendResetPwMail(req,res) {
 
   if (!userInfo) return res.status(404).send({message : '존재하지 않는 유저 아이디입니다.'})
 
-  const pwResetToken = jwt.sign({user_id}, PW_RESET_TOKEN.secretKey, PW_RESET_TOKEN.config)
+  const pwResetToken = jwt.sign({user_id}, process.env.PWRESET_TOKEN_SECRETKEY, {expiresIn : '10m'})
   const emailSendResult =  await sendResetPwLink(userInfo.user_email, pwResetToken)
   if (emailSendResult === 'error') {
     return res.status(404).send({message : '알 수 없는 에러가 발생하였습니다.'})
@@ -184,7 +183,7 @@ export async function sendResetPwMail(req,res) {
 export async function resetPw(req,res) {
   const pwResetToken = req.body.token;
   try {
-    const result = jwt.verify(pwResetToken, PW_RESET_TOKEN.secretKey);
+    const result = jwt.verify(pwResetToken, process.env.PWRESET_TOKEN_SECRETKEY);
     const user_id = result.user_id;
     const isTokenSame = await memberRepository.comparePwResetToken(pwResetToken, user_id)
     

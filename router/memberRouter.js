@@ -40,6 +40,10 @@ router.post('/find/pw/sendmail', memberController.sendResetPwMail)
 router.post('/find/pw/reset', memberController.resetPw)
 
 
+{/** 개발 편의용 유저 권한 변경 api */}
+router.post('/dev/setauth', memberController.setAuth)
+
+
 
 
 export default router

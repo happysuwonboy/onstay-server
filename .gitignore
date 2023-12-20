@@ -3,6 +3,11 @@
 
 # 안에 있는 모든 파일을 무시
 /uploads/userprofile/*
+/uploads/reviewfile/*
+/uploads/noticefile/*
+
+# 에셋 폴더 (이미지 등)
+/assets
 
 # 보안이 중요한 정보들을 담는 환경변수 파일
 .env

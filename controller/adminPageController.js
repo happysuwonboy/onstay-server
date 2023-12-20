@@ -28,9 +28,10 @@ export async function detailAcc(req, res) {
 /* 숙소, 객실 등록 */
 export async function insertAcc(req,res) {
     const { accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2, roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa } = req.body;
-    const roomImg1 = req.files.roomImg[0].filename;
-    const roomImg2 = req.files.roomImg[1].filename;
-    const roomImg3 = req.files.roomImg[2].filename;
+    console.log(req.files.roomImg.length);
+    const roomImg1 = req.files.roomImg.length>0 ? req.files.roomImg[0].filename : 'no_image';
+    const roomImg2 = req.files.roomImg.length>1 ? req.files.roomImg[1].filename : 'no_image';
+    const roomImg3 = req.files.roomImg.length>2? req.files.roomImg[2].filename : 'no_image';
     const accImgs = req.files.accImgs;
     try {
         const result = await adminPageRepository.insertAcc({accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2});

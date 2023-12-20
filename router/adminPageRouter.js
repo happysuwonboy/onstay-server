@@ -15,7 +15,7 @@ const ImgUpload = multer({
             done(null, fileName);
         },
         destination(req, file, done) {
-            done(null, path.join(path.resolve(), 'uploads', file.fieldname==='accImgs' ? 'accfile' : 'roomfile')) 
+            done(null, path.join(path.resolve(), 'assets', 'images', file.fieldname==='accImgs' ? 'acc' : 'room')) 
         }
     })
 })

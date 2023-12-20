@@ -6,7 +6,7 @@ import * as adminPageController from '../controller/adminPageController.js';
 
 const router = express.Router();
 
-const roomImgUpload = multer({
+const ImgUpload = multer({
     storage : multer.diskStorage({
         filename(req,file,done) {
             const randomId = uuid(); 
@@ -15,30 +15,15 @@ const roomImgUpload = multer({
             done(null, fileName);
         },
         destination(req, file, done) {
-            done(null, path.join(path.resolve(), 'uploads', 'roomfile')) 
-        }
-    })
-})
-const accImgUpload = multer({
-    storage : multer.diskStorage({
-        filename(req,file,done) {
-            const randomId = uuid();
-            const ext = path.extname(file.originalname);
-            const fileName = randomId + ext;
-            done(null, fileName);
-        },
-        destination(req, file, done) {
-            done(null, path.join(path.resolve(), 'uploads', 'accfile')) 
+            done(null, path.join(path.resolve(), 'uploads', file.fieldname==='accImgs' ? 'accfile' : 'roomfile')) 
         }
     })
 })
 
-const roomImgMiddleWare = roomImgUpload.array('roomImg', 3);
-const accImgMiddleWare = accImgUpload.array('accImgs', 5);
-
+const ImgUploadMiddleWare = ImgUpload.fields([{name : 'roomImg'}, {name : 'accImgs'}]);
 
 router.get('/accs/detail/', adminPageController.detailAcc);
-router.post('/accs/insert/', roomImgMiddleWare, accImgMiddleWare, adminPageController.insertAcc);
+router.post('/accs/insert/', ImgUploadMiddleWare, adminPageController.insertAcc);
 router.delete('/accs/delete/', adminPageController.countRoomPerAcc);
 router.get('/accs/:page', adminPageController.getAccList);
 

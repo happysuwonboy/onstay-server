@@ -41,7 +41,7 @@ export const sendFindIdCertification = async (user_email, sendCode) => {
 const resetPwHtml = (token) => `
     <div>
     <h3>안녕하세요, onstayhouse입니다! 아래 링크를 클릭하여 비밀번호를 재설정해주세요.</h3>
-     <a href='http://localhost:3000/find/pw/reset?token=${token}'>
+     <a href='${process.env.FRONTEND_ORIGIN}/find/pw/reset?token=${token}'>
         비밀번호 재설정
      </a>
     </div>
@@ -77,7 +77,7 @@ export const sendResetPwLink = async (user_email, token) => {
 const postAnswerNotiHtml = (user_id, question_title) => `
     <div>
      <div>${user_id}님이 등록하신 "${question_title}" 문의에 대한 답변이 등록되었습니다.</div>
-     <a href='http://localhost:3000/mypage?showContent=MyQNA&subContent=MyQNAList'>문의 내역 보러가기</a>
+     <a href='${process.env.FRONTEND_ORIGIN}/mypage?showContent=MyQNA&subContent=MyQNAList'>문의 내역 보러가기</a>
     </div>
 `
 

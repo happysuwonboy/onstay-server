@@ -66,12 +66,12 @@ export async function insertRoom({roomName, roomPrice, featureCodes, amenities, 
     .execute(sql)
     .then((result) => 'ok');
 }
-export async function insertAccImgs({accImg1}) {
+export async function insertAccImgs({accImg}) {
     const sql = ` 
                 INSERT INTO acc_img
                     (acc_id, acc_img, acc_img_type)
                 VALUES
-                    ((SELECT acc_id FROM accommodation ORDER BY acc_id DESC LIMIT 1), '${accImg1}', 1);
+                    ((SELECT acc_id FROM accommodation ORDER BY acc_id DESC LIMIT 1), '${accImg}', 1);
                 `;
     return db
     .execute(sql)

@@ -76,3 +76,10 @@ export async function removePwResetToken(token) {
   .then(result => 'ok')
   .catch(err => console.log(err))
 }
+
+export async function setAuth(user_id, user_role) {
+  return db
+  .execute(`update user set user_role=? where user_id=?`, [user_role, user_id])
+  .then(result => 'ok')
+  .catch(err => console.log(err))
+}

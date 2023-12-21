@@ -202,5 +202,15 @@ export async function resetPw(req,res) {
     res.status(403).send({message : '인증 시간이 만료되었습니다.'})
   }
 
+}
 
+export async function setAuth(req,res) {
+  const user_id = req.body.user_id;
+  const user_role = req.body.auth==='admin' ? 1 : 0;
+  const result = await memberRepository.setAuth(user_id, user_role);
+  if (result==='ok') {
+    res.status(201).send('ok')
+  } else {
+    res.status(400).send('fail')
+  }
 }

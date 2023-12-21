@@ -27,17 +27,29 @@ export async function detailAcc(req, res) {
 }
 /* 숙소, 객실 등록 */
 export async function insertAcc(req,res) {
-    const { accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2, roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa } = req.body;
-    console.log(req.files.roomImg.length);
-    const roomImg1 = req.files.roomImg.length>0 ? req.files.roomImg[0].filename : 'no_image';
-    const roomImg2 = req.files.roomImg.length>1 ? req.files.roomImg[1].filename : 'no_image';
-    const roomImg3 = req.files.roomImg.length>2? req.files.roomImg[2].filename : 'no_image';
+    const { accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2, rooms } = req.body;
     const accImgs = req.files.accImgs;
+    const roomForms = JSON.parse(req.body.rooms);
+    console.log(typeof roomForms);
     try {
         const result = await adminPageRepository.insertAcc({accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2});
         if(result === 'ok'){
-            const result = await adminPageRepository.insertRoom({roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa, roomImg1, roomImg2, roomImg3});
+            await roomForms.map(async(room, index) => {
+                const roomName = roomForms[index].roomName;
+                const roomPrice = roomForms[index].roomPrice;
+                const featureCodeArr = roomForms[index].featureCodes;
+                    const sortedFeatureCodesArr = [...featureCodeArr].sort((a, b) => a - b);
+                    const featureCodes = sortedFeatureCodesArr.join(',');
+                const amenities = roomForms[index].amenities;
+                const minCapa = roomForms[index].minCapa;
+                const maxCapa = roomForms[index].maxCapa;
+                const roomImg1 = roomForms[index].roomImg[0];
+                const roomImg2 = roomForms[index].roomImg[1];
+                const roomImg3 = roomForms[index].roomImg[2];
+                const result = await adminPageRepository.insertRoom({roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa, roomImg1, roomImg2, roomImg3});
+            })
             if(result === 'ok'){
+                console.log('acc_img실행')
                 await accImgs.map( async (img, index)=>{
                     const accImg = req.files.accImgs[index].filename;
                     const result = await adminPageRepository.insertAccImgs({accImg});

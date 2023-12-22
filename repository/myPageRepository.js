@@ -1,6 +1,8 @@
 import { db } from '../db/database.js';
 
 export async function getUserReservations(user_id, filter='') {
+  const isUpcoming = filter === 'datediff(checkin,now()) >= 0 and' ? true : false;
+
   return db
   .execute(`select reservation_id, ac.acc_id, room_name, left(pay_date,10) pay_date,
             rs.room_id, left(checkin,10) checkin_date, left(checkout,10) checkout_date,
@@ -11,7 +13,7 @@ export async function getUserReservations(user_id, filter='') {
             from reservation rs inner join room rm inner join accommodation ac
             on rs.room_id = rm.room_id and rm.acc_id = ac.acc_id
             where ${filter} user_id=?
-            order by checkin_date desc`,[user_id])
+            order by checkin_date ${isUpcoming ? 'asc' : 'desc'}`,[user_id])
   .then(result=>result[0])
 }
 
@@ -202,7 +204,7 @@ export async function getQuestion(question_id) {
 
 export async function getQuestions(user_id) {
   return db
-  .execute(`select row_number() over() as rno, q.question_id, question_category, question_title, question_content, 
+  .execute(`select row_number() over(order by q.update_date desc) as rno, q.question_id, question_category, question_title, question_content, 
                    left(q.update_date,10) as update_date, if(a.question_id is not null, 1, 0) as answer_state from 
                    question q left outer join answer a on q.question_id = a.question_id
                    where q.user_id=? order by q.update_date desc`, [user_id])

@@ -1,6 +1,8 @@
 import { db } from '../db/database.js';
 
 export async function getUserReservations(user_id, filter='') {
+  const isUpcoming = filter === 'datediff(checkin,now()) >= 0 and' ? true : false;
+
   return db
   .execute(`select reservation_id, ac.acc_id, room_name, left(pay_date,10) pay_date,
             rs.room_id, left(checkin,10) checkin_date, left(checkout,10) checkout_date,
@@ -11,7 +13,7 @@ export async function getUserReservations(user_id, filter='') {
             from reservation rs inner join room rm inner join accommodation ac
             on rs.room_id = rm.room_id and rm.acc_id = ac.acc_id
             where ${filter} user_id=?
-            order by checkin_date desc`,[user_id])
+            order by checkin_date ${isUpcoming ? 'asc' : 'desc'}`,[user_id])
   .then(result=>result[0])
 }
 

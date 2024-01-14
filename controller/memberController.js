@@ -60,9 +60,9 @@ export async function userLogin(req, res) {
     const accessToken = createAccessToken({ user_id })
     const refreshToken = createRefreshToken({ user_id })
     await memberRepository.storeRefreshToken([user_id, refreshToken])
-    res.cookie('auth_access_token', accessToken, {maxAge:1*60*60*1000}) // 1시간
+    // res.cookie('auth_access_token', accessToken, {maxAge:1*60*60*1000}) // 1시간
     res.cookie('auth_refresh_token', refreshToken, {httpOnly:true, maxAge:30*24*60*60*1000}) // 30일
-    res.status(201).json({userInfo : {user_id, user_name, isAdmin : user_role===1 ? true : false}})
+    res.status(201).json({accessToken, userInfo : {user_id, user_name, isAdmin : user_role===1 ? true : false}})
   }
 }
 
@@ -73,13 +73,13 @@ export async function userLogout(req,res) {
   removeAllToken(res)
   res.status(204).send('ok')
 }
-
+ 
 
 // 액세스 토큰 및 리프레쉬 토큰 체크 컨트롤러
 export async function tokenCheck(req, res) {
-  const accessToken = req.cookies.auth_access_token;
+  // const accessToken = req.cookies.auth_access_token;
+  const accessToken = req.headers.authorization?.split(' ')[1];
   const refreshToken = req.cookies.auth_refresh_token;
-
 
   // 1. 액세스 토큰 만료 여부를 체크
   if (accessToken) {
@@ -87,7 +87,7 @@ export async function tokenCheck(req, res) {
       let user_id = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRETKEY).user_id;
       const userInfo = await memberRepository.getUserInfo(user_id);
       let {user_name, user_role} = userInfo;
-      return res.status(200).send({userInfo : {user_id, user_name, isAdmin : user_role===1 ? true : false}}); // 액세스 토큰 만료되지 않은 경우 ok 보내주고 종료
+      return res.status(200).send({accessToken, userInfo : {user_id, user_name, isAdmin : user_role===1 ? true : false}}); // 액세스 토큰 만료되지 않은 경우 ok 보내주고 종료
     } catch {
       removeAllToken(res)
       return res.status(401).send('invalid token') // 이상한 형식이거나, 프로젝트의 시크릿키로 암호화되지 않았을 경우  종료
@@ -122,8 +122,8 @@ export async function tokenCheck(req, res) {
   const newAccessToken = createAccessToken({user_id});
   const userInfo = await memberRepository.getUserInfo(user_id)
   let {user_name, user_role} = userInfo
-  res.cookie('auth_access_token', newAccessToken, {maxAge:1*60*60*1000})
-  res.status(200).send({userInfo : {user_id, user_name, isAdmin : user_role===1 ? true : false}})
+  // res.cookie('auth_access_token', newAccessToken, {maxAge:1*60*60*1000})
+  res.status(200).send({accessToken:newAccessToken, userInfo : {user_id, user_name, isAdmin : user_role===1 ? true : false}})
 }
 
 

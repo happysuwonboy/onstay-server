@@ -77,6 +77,51 @@ export async function insertAccImgs({accImg}) {
     .execute(sql)
     .then((result) => 'ok');
 }
+/* 숙소, 객실 수정 */
+export async function updateAcc({accId, accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2}) {
+    const sql = ` 
+                UPDATE accommodation
+                SET acc_name='${accName}', tel='${tel}', zipcode='${zipcode}', address='${address}', latitude='${latitude}', longitude='${longitude}', 
+                    parking='${parking}', cook='${cook}', pet='${pet}', breakfast='${breakfast}', acc_checkin='${accCheckin}', acc_checkout='${accCheckout}', 
+                    homepage='${homepage}', only='${only}', area_code='${areaCode}', acc_summary1='${accSummary1}', acc_summary2='${accSummary2}'
+                WHERE acc_id = '${accId}';
+                `;
+    return db
+    .execute(sql)
+    .then((result) => 'ok');
+}
+export async function updateRoom({roomId, roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa, roomImg1, roomImg2, roomImg3}) {
+    console.log(roomImg1, roomImg2, roomImg3);
+    const sql = ` 
+                UPDATE room
+                SET room_name='${roomName}', room_price='${roomPrice}', feature_codes='${featureCodes}', amenities='${amenities}', 
+                    min_capa='${minCapa}', max_capa='${maxCapa}', room_img1='${roomImg1}', room_img2='${roomImg2}', room_img3='${roomImg3}'
+                WHERE room_id = '${roomId}'
+                `;
+    return db
+    .execute(sql)
+    .then((result) => 'ok');
+}
+export async function deleteAccImgs({accId}){
+    const sql = `
+                DELETE FROM acc_img
+                WHERE acc_id = '${accId}';
+                `
+    return db
+    .execute(sql)
+    .then((result) => 'ok');
+}
+export async function updateAccImgs({accId, accImg}) {
+    const sql = ` 
+                INSERT INTO acc_img
+                    (acc_id, acc_img, acc_img_type)
+                VALUES
+                    ('${accId}', '${accImg}', 1);
+                `;
+    return db
+    .execute(sql)
+    .then((result) => 'ok');
+}
 /* 숙소, 객실 삭제 */
 export async function countRoomPerAcc({accId}){
     const sql = `SELECT COUNT(*) as count FROM room WHERE acc_id = '${accId}'`;

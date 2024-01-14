@@ -20,10 +20,11 @@ const ImgUpload = multer({
     })
 })
 
-const ImgUploadMiddleWare = ImgUpload.fields([{name : 'roomImg'}, {name : 'accImgs'}]);
+const ImgUploadMiddleWare = ImgUpload.fields([{name: 'roomImg'}, {name: 'roomImg0'}, {name: 'roomImg1'}, {name: 'roomImg2'}, {name : 'accImgs'}]);
 
 router.get('/accs/detail/', adminPageController.detailAcc);
 router.post('/accs/insert/', ImgUploadMiddleWare, adminPageController.insertAcc);
+router.post('/accs/update/', ImgUploadMiddleWare, adminPageController.updateAcc);
 router.delete('/accs/delete/', adminPageController.countRoomPerAcc);
 router.get('/accs/:page', adminPageController.getAccList);
 

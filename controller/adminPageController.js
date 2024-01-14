@@ -22,34 +22,48 @@ export async function detailAcc(req, res) {
         const result = await adminPageRepository.detailAcc({accId, roomName});
         res.json(result);
     } catch (error) {
-        console.error('DB에서 상세 정보 가져오는 중 에러 발생 => ' + error);
+        console.error('DB에서 숙소 상세 정보 가져오는 중 에러 발생 => ' + error);
     }
 }
 /* 숙소, 객실 등록 */
 export async function insertAcc(req,res) {
     const { accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2, rooms } = req.body;
     const accImgs = req.files.accImgs;
+    const roomImgs0 = req.files.roomImg0;
+    const roomImgs1 = req.files.roomImg1;
+    const roomImgs2 = req.files.roomImg2;
     const roomForms = JSON.parse(req.body.rooms);
-    console.log(typeof roomForms);
     try {
         const result = await adminPageRepository.insertAcc({accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2});
         if(result === 'ok'){
             await roomForms.map(async(room, index) => {
                 const roomName = roomForms[index].roomName;
                 const roomPrice = roomForms[index].roomPrice;
-                const featureCodeArr = roomForms[index].featureCodes;
+                const featureCodeArr = roomForms[index].featureCodesArr;
                     const sortedFeatureCodesArr = [...featureCodeArr].sort((a, b) => a - b);
                     const featureCodes = sortedFeatureCodesArr.join(',');
                 const amenities = roomForms[index].amenities;
                 const minCapa = roomForms[index].minCapa;
                 const maxCapa = roomForms[index].maxCapa;
-                const roomImg1 = roomForms[index].roomImg[0];
-                const roomImg2 = roomForms[index].roomImg[1];
-                const roomImg3 = roomForms[index].roomImg[2];
+                let roomImg1 = '';
+                let roomImg2 = '';
+                let roomImg3 = '';
+                if(index===0){
+                    roomImg1 = roomImgs0[0]?.filename || '';
+                    roomImg2 = roomImgs0[1]?.filename || '';
+                    roomImg3 = roomImgs0[2]?.filename || '';
+                }else if(index===1){
+                    roomImg1 = roomImgs1[0]?.filename || '';
+                    roomImg2 = roomImgs1[1]?.filename || '';
+                    roomImg3 = roomImgs1[2]?.filename || '';
+                }else if(index===2){
+                    roomImg1 = roomImgs2[0]?.filename || '';
+                    roomImg2 = roomImgs2[1]?.filename || '';
+                    roomImg3 = roomImgs2[2]?.filename || '';
+                }
                 const result = await adminPageRepository.insertRoom({roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa, roomImg1, roomImg2, roomImg3});
             })
             if(result === 'ok'){
-                console.log('acc_img실행')
                 await accImgs.map( async (img, index)=>{
                     const accImg = req.files.accImgs[index].filename;
                     const result = await adminPageRepository.insertAccImgs({accImg});
@@ -58,7 +72,46 @@ export async function insertAcc(req,res) {
             }
         }
     } catch (error) {
-        console.error('숙소 insert 중 에러 발생 => ' + error);
+        console.error('숙소 객실 insert 중 에러 발생 => ' + error);
+    }
+}
+/* 숙소, 객실 수정 */
+export async function updateAcc(req, res) {
+    const { accId, accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2, roomId } = req.body;
+    const accImgs = req.files.accImgs;
+    const roomImgs = req.files.roomImg;
+    const roomForms = JSON.parse(req.body.rooms);
+    console.log(roomImgs);
+    try {
+        const updateAccResult = await adminPageRepository.updateAcc({accId, accName, tel, zipcode, address, latitude, longitude, parking, cook, pet, breakfast, accCheckin, accCheckout, homepage, registerDate, only, areaCode, accSummary1, accSummary2});
+        if(updateAccResult === 'ok'){
+            await roomForms.map(async(room, index) => {
+                const roomName = roomForms[index].roomName;
+                const roomPrice = roomForms[index].roomPrice;
+                const featureCodeArr = roomForms[index].featureCodesArr;
+                    const sortedFeatureCodesArr = [...featureCodeArr].sort((a, b) => a - b);
+                    const featureCodes = sortedFeatureCodesArr.join(',');
+                const amenities = roomForms[index].amenities;
+                const minCapa = roomForms[index].minCapa;
+                const maxCapa = roomForms[index].maxCapa;
+                const roomImg1 = roomImgs[0]?.filename || '';
+                const roomImg2 = roomImgs[1]?.filename || '';
+                const roomImg3 = roomImgs[2]?.filename || '';
+                const result = await adminPageRepository.updateRoom({roomId, roomName, roomPrice, featureCodes, amenities, minCapa, maxCapa, roomImg1, roomImg2, roomImg3});
+            })
+            if(updateAccResult === 'ok'){
+                const deleteAccImgsResult = await adminPageRepository.deleteAccImgs({accId});
+                if(deleteAccImgsResult === 'ok'){
+                    await accImgs.map( async (img, index)=>{
+                        const accImg = req.files.accImgs[index].filename;
+                        const updateAccImgsResult = await adminPageRepository.updateAccImgs({accId, accImg});
+                    })
+                    res.json('ok');
+                }
+            }
+        }
+    } catch (error) {
+        console.error('숙소 객실 수정 중 에러 발생 => ' + error);
     }
 }
 /* 숙소, 객실 삭제 */

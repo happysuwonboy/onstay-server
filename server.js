@@ -21,7 +21,7 @@ const server = express();
 const PORT = 8000;
 
 server.use(cors({
-  origin : process.env.FRONTEND_ORIGIN,
+  origin : JSON.parse(process.env.FRONTEND_ORIGINS),
   credentials : true,
   methods : ['GET', 'POST', 'DELETE', 'PUT']
 }));
